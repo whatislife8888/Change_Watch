@@ -1,0 +1,34 @@
+.link { display: block; color: inherit; text-decoration: none !important; border-radius: 18px; }
+.movement { display: flex; flex-direction: column; gap: 10px; width: 240px; }
+.large { width: min(560px, 100%); }
+.plate {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.25), 0 14px 30px -18px rgba(0, 0, 0, 0.7);
+}
+.svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.label { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums lining-nums; }
+.large + .label, .large .label { font-size: var(--fs-16); }
+
+.gear { fill: var(--gear); stroke: var(--gear-shade); stroke-width: 0.5; }
+.hole { fill: color-mix(in srgb, var(--plate-base) 70%, #000); opacity: 0.55; }
+.bridge { fill: color-mix(in srgb, var(--plate-base) 88%, #fff); opacity: 0.55; stroke: rgba(0, 0, 0, 0.2); stroke-width: 0.6; }
+.balanceRim { fill: var(--gear); stroke: var(--gear-shade); stroke-width: 0.6; }
+.hairspring { fill: none; stroke: var(--blued); stroke-width: 0.8; opacity: 0.9; }
+.screw { fill: var(--blued-deep); stroke: var(--blued); stroke-width: 0.6; }
+.screwSlot { stroke: #0c1a55; stroke-width: 1; stroke-linecap: round; }
+.jewel { fill: var(--ruby-jewel); stroke: rgba(255, 255, 255, 0.5); stroke-width: 0.5; transition: fill 280ms var(--ease-out); }
+.jewelBusy { fill: var(--lume); filter: drop-shadow(0 0 3px var(--lume-glow)); }
+
+.spin { transform-origin: 0 0; animation: spin linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.balance { transform-origin: 0 0; animation: swing ease-in-out infinite alternate; }
+@keyframes swing { from { transform: rotate(-150deg); } to { transform: rotate(150deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation-play-state: paused !important; }
+  .balance { animation: none !important; }
+}

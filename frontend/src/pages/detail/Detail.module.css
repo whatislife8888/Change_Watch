@@ -1,0 +1,49 @@
+/* Shared styles for the Page detail tabs. */
+.stack { display: flex; flex-direction: column; gap: 12px; }
+
+.log { list-style: none; margin: 0; padding: 0; }
+.logRow {
+  display: grid;
+  grid-template-columns: 150px minmax(180px, auto) minmax(0, 1fr) 60px;
+  gap: 16px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--fs-14);
+}
+.logWhen { color: var(--text-2); }
+.logDetail { color: var(--text-2); overflow-wrap: anywhere; }
+.logMs { color: var(--text-3); text-align: right; }
+@media (max-width: 760px) {
+  .logRow { grid-template-columns: 1fr auto; gap: 4px 12px; }
+  .logOutcome { grid-column: 1 / -1; order: -1; }
+  .logDetail { grid-column: 1 / -1; }
+}
+
+.settings { display: flex; flex-direction: column; gap: 0; max-width: 760px; }
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.section:first-child { padding-top: 8px; }
+.sectionTitle { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-24); margin-top: 8px; }
+.twoCol { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.threeCol { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+@media (max-width: 640px) { .twoCol, .threeCol { grid-template-columns: 1fr; } }
+
+.rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.rule { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+.ruleText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ruleKind { font-size: 12px; color: var(--text-2); }
+.ruleValue { font-family: var(--font-mono); font-size: 13px; color: var(--text); overflow-wrap: anywhere; }
+.ruleSample { font-size: 13px; color: var(--text-2); overflow-wrap: anywhere; }
+.details summary { cursor: pointer; font-weight: 500; min-height: 36px; display: flex; align-items: center; }
+.details[open] { display: flex; flex-direction: column; gap: 12px; }
+.builtinGroup { display: flex; flex-direction: column; gap: 4px; }
+.builtinCode { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); overflow-wrap: anywhere; }
+.copyRow { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.copyRow > :first-child { flex: 1 1 320px; }
+.actionsRow { display: flex; gap: 12px; flex-wrap: wrap; }

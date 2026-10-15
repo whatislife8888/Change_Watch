@@ -11,10 +11,13 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { Toaster } from 'sonner';
 import { useMe } from './api/hooks';
 import { PrefsProvider, usePrefs } from './lib/theme';
+import { useEvents } from './realtime/useEvents';
 
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const AddPage = lazy(() => import('./pages/AddPage'));
+const PageDetail = lazy(() => import('./pages/PageDetail'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const queryClient = new QueryClient({
@@ -48,6 +51,13 @@ function GuestOnly({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+/** Opens the live SSE connection whenever someone is logged in. */
+function LiveEvents() {
+  const { data: user } = useMe();
+  useEvents(!!user);
+  return null;
+}
+
 function ThemedToaster() {
   const { theme } = usePrefs();
   return <Toaster theme={theme === 'opaline' ? 'light' : 'dark'} position="bottom-right" closeButton={false} visibleToasts={4} gap={10} />;
@@ -63,9 +73,12 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<GuestOnly><Login /></GuestOnly>} />
               <Route path="/signup" element={<GuestOnly><Signup /></GuestOnly>} />
+              <Route path="/pages/new" element={<RequireAuth><AddPage /></RequireAuth>} />
+              <Route path="/pages/:id" element={<RequireAuth><PageDetail /></RequireAuth>} />
               <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
             </Routes>
           </Suspense>
+          <LiveEvents />
           <ThemedToaster />
         </BrowserRouter>
       </PrefsProvider>

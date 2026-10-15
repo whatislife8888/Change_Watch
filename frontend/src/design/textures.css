@@ -30,12 +30,11 @@ body::before {
 .tex-cotes {
   background-color: var(--plate-base);
   background-image:
+    radial-gradient(120% 90% at 30% 20%, rgba(255, 255, 255, 0.18), transparent 60%),
     repeating-linear-gradient(115deg,
-      transparent 0px,
-      var(--plate-band) 9px,
-      transparent 18px,
-      rgba(0, 0, 0, 0.10) 22px,
-      transparent 26px);
+      rgba(0, 0, 0, 0.05) 0px,
+      var(--plate-band) 11px,
+      rgba(0, 0, 0, 0.05) 22px);
 }
 
 /* Brushed-metal shimmer for skeleton loaders (instead of flat grey boxes). */

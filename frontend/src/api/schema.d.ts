@@ -78,7 +78,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/health": {
+    "/api/watches": {
         parameters: {
             query?: never;
             header?: never;
@@ -86,10 +86,462 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Api Health
-         * @description Tiny endpoint the frontend calls to prove the dev proxy works.
+         * List Watches
+         * @description All of the user's pages. Filters: status=changed_today|attention|paused|ok, q=search text.
          */
+        get: operations["list_watches_api_watches_get"];
+        put?: never;
+        /** Create Watch */
+        post: operations["create_watch_api_watches_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Watch */
+        get: operations["get_watch_api_watches__watch_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Watch
+         * @description Delete a watch; if nobody else watches the page, delete its Target and stored files too.
+         */
+        delete: operations["delete_watch_api_watches__watch_id__delete"];
+        options?: never;
+        head?: never;
+        /** Patch Watch */
+        patch: operations["patch_watch_api_watches__watch_id__patch"];
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check Now
+         * @description Manual check: priority 0, but with a 2-minute cooldown per page (politeness, Q4).
+         */
+        post: operations["check_now_api_watches__watch_id__check_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Snapshots */
+        get: operations["list_snapshots_api_watches__watch_id__snapshots_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/snapshots/{snapshot_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Snapshot */
+        get: operations["get_snapshot_api_snapshots__snapshot_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compare
+         * @description Compare ANY two versions of a page: text ops (line + word level) and the visual diff.
+         */
+        get: operations["compare_api_watches__watch_id__compare_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Checks
+         * @description The check log, in plain outcomes. Only target-level rows and this watch's own rows (privacy).
+         */
+        get: operations["list_checks_api_watches__watch_id__checks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/numbers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Numbers */
+        get: operations["get_numbers_api_watches__watch_id__numbers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/volatile-rules/{index}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Rule
+         * @description Forget one learned noise rule (rules belong to the page, so this affects every watcher).
+         */
+        delete: operations["delete_rule_api_watches__watch_id__volatile_rules__index__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/rss/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Regenerate Rss
+         * @description New secret RSS link; the old one stops working (useful if a link was shared by mistake).
+         */
+        post: operations["regenerate_rss_api_watches__watch_id__rss_regenerate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share Setup
+         * @description Create a template link with this page's regions, ignore rules and keywords (never alert settings).
+         */
+        post: operations["share_setup_api_watches__watch_id__share_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/stats/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Overview */
+        get: operations["overview_api_stats_overview_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Activity
+         * @description Changes, errors, blocks and recoveries across the user's pages, newest first.
+         *
+         *     Errors are reported once per run (when a page goes from OK to failing), not on every failed check.
+         */
+        get: operations["activity_api_activity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Admin Stats
+         * @description The engine, explained with numbers (for /system).
+         */
+        get: operations["admin_stats_api_admin_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Events */
+        get: operations["events_api_events_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/url/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Url Preview
+         * @description Validate + normalise a URL as the user types, and return its dial seed for the live dial.
+         *
+         *     Deliberately cheap: no DNS lookup or fetch here (that happens when the page is actually added),
+         *     so typing can't be used to probe networks.
+         */
+        post: operations["url_preview_api_url_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/healthz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Healthz
+         * @description For Railway's health check and humans: is the database reachable, is Chromium running?
+         */
+        get: operations["healthz_healthz_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Api Health */
         get: operations["api_health_api_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/robots.txt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Robots */
+        get: operations["robots_robots_txt_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/demo/changing-page": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Demo Page */
+        get: operations["demo_page_demo_changing_page_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Bot Page
+         * @description Explains our crawler to site owners who see "ChangeWatchBot" in their logs.
+         */
+        get: operations["bot_page_bot_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/media/fetch/{fetch_id}/screenshot.png": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Fetch Screenshot */
+        get: operations["fetch_screenshot_api_media_fetch__fetch_id__screenshot_png_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/media/snapshot/{snapshot_id}/crop.png": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Snapshot Crop */
+        get: operations["snapshot_crop_api_media_snapshot__snapshot_id__crop_png_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/media/snapshot/{snapshot_id}/thumb.jpg": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Snapshot Thumb */
+        get: operations["snapshot_thumb_api_media_snapshot__snapshot_id__thumb_jpg_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/media/diff/{a}/{b}.png": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Diff Image */
+        get: operations["diff_image_api_media_diff__a___b__png_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -102,6 +554,164 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActivityItem */
+        ActivityItem: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "change" | "error" | "blocked" | "recovered" | "baseline";
+            /** At */
+            at: string;
+            /** Watch Id */
+            watch_id: number;
+            /** Watch Name */
+            watch_name: string;
+            /** Domain */
+            domain: string;
+            /** Dial Seed */
+            dial_seed: string;
+            /** Summary */
+            summary: string;
+            /** Snapshot Id */
+            snapshot_id?: number | null;
+            /** Previous Snapshot Id */
+            previous_snapshot_id?: number | null;
+            /**
+             * Added
+             * @default 0
+             */
+            added: number;
+            /**
+             * Removed
+             * @default 0
+             */
+            removed: number;
+        };
+        /** AdminStats */
+        AdminStats: {
+            /** Users */
+            users: number;
+            /** Watches */
+            watches: number;
+            /** Targets */
+            targets: number;
+            /** Sharing Ratio */
+            sharing_ratio: number;
+            /** Checks 24H */
+            checks_24h: number;
+            /** Outcome Counts */
+            outcome_counts: {
+                [key: string]: number;
+            };
+            /** Ok Rate */
+            ok_rate: number;
+            /** Error Rate */
+            error_rate: number;
+            /** Blocked Rate */
+            blocked_rate: number;
+            /** Avg Render Ms */
+            avg_render_ms: number | null;
+            /** Renders Saved 24H */
+            renders_saved_24h: number;
+            /** Queue */
+            queue: {
+                [key: string]: unknown;
+            };
+            /** Domains */
+            domains: components["schemas"]["DomainSlot"][];
+            /** Learned Rules */
+            learned_rules: number;
+            /** Top Shared */
+            top_shared: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** CheckLogItem */
+        CheckLogItem: {
+            /** Id */
+            id: number;
+            /** Started At */
+            started_at: string;
+            /** Finished At */
+            finished_at: string | null;
+            /** Outcome */
+            outcome: string;
+            /** Attempt */
+            attempt: number;
+            /** Detail */
+            detail: string | null;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Watch Id */
+            watch_id: number | null;
+        };
+        /** CheckQueued */
+        CheckQueued: {
+            /** Queued */
+            queued: boolean;
+            /**
+             * Attached
+             * @default false
+             */
+            attached: boolean;
+        };
+        /** CompareResult */
+        CompareResult: {
+            a: components["schemas"]["CompareSide"];
+            b: components["schemas"]["CompareSide"];
+            text: components["schemas"]["TextDiff"];
+            visual: components["schemas"]["VisualDiff"];
+        };
+        /** CompareSide */
+        CompareSide: {
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at: string;
+            /** Summary */
+            summary: string | null;
+        };
+        /**
+         * DiffOp
+         * @description One block of the diff. `lines` is used by equal/insert/delete; `pairs` by replace.
+         *
+         *     Each pair is {"old": [[tag, text], ...], "new": [[tag, text], ...]} where tag is
+         *     equal | insert | delete — the word-level highlights inside a changed line.
+         */
+        DiffOp: {
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "equal" | "insert" | "delete" | "replace";
+            /** Lines */
+            lines?: string[] | null;
+            /** Pairs */
+            pairs?: {
+                [key: string]: string[][];
+            }[] | null;
+        };
+        /** DiffStats */
+        DiffStats: {
+            /** Added */
+            added: number;
+            /** Removed */
+            removed: number;
+            /** Changed */
+            changed: number;
+            /** Change Score */
+            change_score: number;
+        };
+        /** DomainSlot */
+        DomainSlot: {
+            /** Domain */
+            domain: string;
+            /** Next Allowed At */
+            next_allowed_at: string | null;
+            /** Busy */
+            busy: boolean;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -114,6 +724,86 @@ export interface components {
             /** Password */
             password: string;
         };
+        /** NumberPoint */
+        NumberPoint: {
+            /** T */
+            t: string;
+            /** Value */
+            value: number;
+            /** Raw */
+            raw: string;
+        };
+        /** NumberThresholds */
+        NumberThresholds: {
+            /** Below */
+            below?: number | null;
+            /** Above */
+            above?: number | null;
+            /** Change Pct */
+            change_pct?: number | null;
+        };
+        /** NumbersOut */
+        NumbersOut: {
+            /** Points */
+            points: components["schemas"]["NumberPoint"][];
+            /** Min */
+            min: number | null;
+            /** Max */
+            max: number | null;
+            /** Latest */
+            latest: number | null;
+            /** First */
+            first: number | null;
+            /** Change Pct */
+            change_pct: number | null;
+            /** Changed At */
+            changed_at: string[];
+        };
+        /** OutcomeItem */
+        OutcomeItem: {
+            /** Outcome */
+            outcome: string;
+            /** At */
+            at: string;
+        };
+        /** OverviewStats */
+        OverviewStats: {
+            /** Total */
+            total: number;
+            /** Changed Today */
+            changed_today: number;
+            /** Needs Attention */
+            needs_attention: number;
+            /** Paused */
+            paused: number;
+            /** Running */
+            running: number;
+            /** Waiting */
+            waiting: number;
+        };
+        /** Region */
+        Region: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** W */
+            w: number;
+            /** H */
+            h: number;
+        };
+        /** RssOut */
+        RssOut: {
+            /** Rss Url */
+            rss_url: string;
+        };
+        /** ShareOut */
+        ShareOut: {
+            /** Template Url */
+            template_url: string;
+            /** Token */
+            token: string;
+        };
         /** SignupIn */
         SignupIn: {
             /** Email */
@@ -125,6 +815,95 @@ export interface components {
              * @default
              */
             display_name: string;
+        };
+        /** SnapshotDetail */
+        SnapshotDetail: {
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at: string;
+            /** Summary */
+            summary: string | null;
+            /** Ai Summary */
+            ai_summary: string | null;
+            /** Added Lines */
+            added_lines: number;
+            /** Removed Lines */
+            removed_lines: number;
+            /** Change Score */
+            change_score: number;
+            /** Thumbnail Url */
+            thumbnail_url: string | null;
+            /** Keyword Hit */
+            keyword_hit: string | null;
+            /** Is Baseline */
+            is_baseline: boolean;
+            /** Is First */
+            is_first: boolean;
+            /** Watch Id */
+            watch_id: number;
+            /** Raw Text */
+            raw_text: string;
+            /** Screenshot Url */
+            screenshot_url: string | null;
+            /** Crop Url */
+            crop_url: string | null;
+        };
+        /** SnapshotItem */
+        SnapshotItem: {
+            /** Id */
+            id: number;
+            /** Created At */
+            created_at: string;
+            /** Summary */
+            summary: string | null;
+            /** Ai Summary */
+            ai_summary: string | null;
+            /** Added Lines */
+            added_lines: number;
+            /** Removed Lines */
+            removed_lines: number;
+            /** Change Score */
+            change_score: number;
+            /** Thumbnail Url */
+            thumbnail_url: string | null;
+            /** Keyword Hit */
+            keyword_hit: string | null;
+            /** Is Baseline */
+            is_baseline: boolean;
+            /** Is First */
+            is_first: boolean;
+        };
+        /** TextDiff */
+        TextDiff: {
+            /** Ops */
+            ops: components["schemas"]["DiffOp"][];
+            stats: components["schemas"]["DiffStats"];
+        };
+        /** UrlPreviewIn */
+        UrlPreviewIn: {
+            /** Url */
+            url: string;
+        };
+        /** UrlPreviewOut */
+        UrlPreviewOut: {
+            /** Valid */
+            valid: boolean;
+            /** Normalised Url */
+            normalised_url?: string | null;
+            /** Domain */
+            domain?: string | null;
+            /** Dial Seed */
+            dial_seed?: string | null;
+            /** Error */
+            error?: string | null;
+            /** Already Watching Id */
+            already_watching_id?: number | null;
+            /**
+             * Other Watchers
+             * @default 0
+             */
+            other_watchers: number;
         };
         /** UserOut */
         UserOut: {
@@ -151,6 +930,251 @@ export interface components {
             input?: unknown;
             /** Context */
             ctx?: Record<string, never>;
+        };
+        /** VisualDiff */
+        VisualDiff: {
+            /** Before Url */
+            before_url: string | null;
+            /** After Url */
+            after_url: string | null;
+            /** Width */
+            width: number;
+            /** Height Before */
+            height_before: number;
+            /** Height After */
+            height_after: number;
+            /** Regions */
+            regions: components["schemas"]["Region"][];
+            /** Changed Percent */
+            changed_percent: number;
+            /** Shifted By Px */
+            shifted_by_px: number;
+            /** Diff Image Url */
+            diff_image_url: string | null;
+            /**
+             * Available
+             * @default true
+             */
+            available: boolean;
+        };
+        /** VolatileRule */
+        VolatileRule: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "text" | "selector";
+            /** Value */
+            value: string;
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /** Learned At */
+            learned_at: string;
+            /**
+             * Hits
+             * @default 0
+             */
+            hits: number;
+        };
+        /** WatchCreate */
+        WatchCreate: {
+            /** Url */
+            url: string;
+            /**
+             * Name
+             * @default
+             */
+            name: string;
+            /**
+             * Interval Minutes
+             * @default 60
+             */
+            interval_minutes: number;
+            /**
+             * Sensitivity
+             * @default medium
+             * @enum {string}
+             */
+            sensitivity: "low" | "medium" | "high";
+            /** Keywords */
+            keywords?: string[];
+            /**
+             * Keyword Mode
+             * @default off
+             * @enum {string}
+             */
+            keyword_mode: "off" | "appear" | "disappear" | "any";
+            /**
+             * Alert Email
+             * @default true
+             */
+            alert_email: boolean;
+            /**
+             * Alert Telegram
+             * @default false
+             */
+            alert_telegram: boolean;
+            /**
+             * Alert Discord
+             * @default false
+             */
+            alert_discord: boolean;
+        };
+        /** WatchDetail */
+        WatchDetail: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Domain */
+            domain: string;
+            /** Dial Seed */
+            dial_seed: string;
+            /** Status */
+            status: string;
+            /** Status Message */
+            status_message: string | null;
+            /** Paused */
+            paused: boolean;
+            /** Interval Minutes */
+            interval_minutes: number;
+            /** Last Checked At */
+            last_checked_at: string | null;
+            /** Last Changed At */
+            last_changed_at: string | null;
+            /** Next Due At */
+            next_due_at: string | null;
+            /** Versions */
+            versions: number;
+            /** Shared Watchers */
+            shared_watchers: number;
+            /** Is Running */
+            is_running: boolean;
+            /** Is Queued */
+            is_queued: boolean;
+            /** Number Latest */
+            number_latest: number | null;
+            /** Number Spark */
+            number_spark: number[];
+            /** Flapping Until */
+            flapping_until: string | null;
+            /** Watch Selectors */
+            watch_selectors: string[];
+            /** Ignore Selectors */
+            ignore_selectors: string[];
+            /** Ignore Carousels */
+            ignore_carousels: boolean;
+            /**
+             * Sensitivity
+             * @enum {string}
+             */
+            sensitivity: "low" | "medium" | "high";
+            /** Keywords */
+            keywords: string[];
+            /**
+             * Keyword Mode
+             * @enum {string}
+             */
+            keyword_mode: "off" | "appear" | "disappear" | "any";
+            /** Number Selector */
+            number_selector: string | null;
+            /** Number Regex */
+            number_regex: string | null;
+            number_thresholds: components["schemas"]["NumberThresholds"];
+            /** Alert Email */
+            alert_email: boolean;
+            /** Alert Telegram */
+            alert_telegram: boolean;
+            /** Alert Discord */
+            alert_discord: boolean;
+            /** Rss Url */
+            rss_url: string;
+            /** Volatile Rules */
+            volatile_rules: components["schemas"]["VolatileRule"][];
+            /** Recent Outcomes */
+            recent_outcomes: components["schemas"]["OutcomeItem"][];
+            /** Builtin Noise Selectors */
+            builtin_noise_selectors: {
+                [key: string]: string[];
+            };
+            /** Created At */
+            created_at: string;
+            /** Last Error */
+            last_error: string | null;
+        };
+        /** WatchPatch */
+        WatchPatch: {
+            /** Name */
+            name?: string | null;
+            /** Interval Minutes */
+            interval_minutes?: number | null;
+            /** Sensitivity */
+            sensitivity?: ("low" | "medium" | "high") | null;
+            /** Keywords */
+            keywords?: string[] | null;
+            /** Keyword Mode */
+            keyword_mode?: ("off" | "appear" | "disappear" | "any") | null;
+            /** Number Selector */
+            number_selector?: string | null;
+            /** Number Regex */
+            number_regex?: string | null;
+            number_thresholds?: components["schemas"]["NumberThresholds"] | null;
+            /** Alert Email */
+            alert_email?: boolean | null;
+            /** Alert Telegram */
+            alert_telegram?: boolean | null;
+            /** Alert Discord */
+            alert_discord?: boolean | null;
+            /** Paused */
+            paused?: boolean | null;
+            /** Ignore Carousels */
+            ignore_carousels?: boolean | null;
+        };
+        /** WatchSummary */
+        WatchSummary: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Url */
+            url: string;
+            /** Domain */
+            domain: string;
+            /** Dial Seed */
+            dial_seed: string;
+            /** Status */
+            status: string;
+            /** Status Message */
+            status_message: string | null;
+            /** Paused */
+            paused: boolean;
+            /** Interval Minutes */
+            interval_minutes: number;
+            /** Last Checked At */
+            last_checked_at: string | null;
+            /** Last Changed At */
+            last_changed_at: string | null;
+            /** Next Due At */
+            next_due_at: string | null;
+            /** Versions */
+            versions: number;
+            /** Shared Watchers */
+            shared_watchers: number;
+            /** Is Running */
+            is_running: boolean;
+            /** Is Queued */
+            is_queued: boolean;
+            /** Number Latest */
+            number_latest: number | null;
+            /** Number Spark */
+            number_spark: number[];
+            /** Flapping Until */
+            flapping_until: string | null;
         };
     };
     responses: never;
@@ -269,6 +1293,603 @@ export interface operations {
             };
         };
     };
+    list_watches_api_watches_get: {
+        parameters: {
+            query?: {
+                status?: string | null;
+                q?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_watch_api_watches_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WatchCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_watch_api_watches__watch_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_watch_api_watches__watch_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_watch_api_watches__watch_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WatchPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_now_api_watches__watch_id__check_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckQueued"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_snapshots_api_watches__watch_id__snapshots_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                before?: number | null;
+            };
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_snapshot_api_snapshots__snapshot_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                snapshot_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SnapshotDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    compare_api_watches__watch_id__compare_get: {
+        parameters: {
+            query: {
+                a: number;
+                b: number;
+            };
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompareResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_checks_api_watches__watch_id__checks_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckLogItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_numbers_api_watches__watch_id__numbers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NumbersOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_rule_api_watches__watch_id__volatile_rules__index__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+                index: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    regenerate_rss_api_watches__watch_id__rss_regenerate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RssOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    share_setup_api_watches__watch_id__share_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShareOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    overview_api_stats_overview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewStats"];
+                };
+            };
+        };
+    };
+    activity_api_activity_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                before?: string | null;
+                watch_id?: number | null;
+                kind?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_stats_api_admin_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminStats"];
+                };
+            };
+        };
+    };
+    events_api_events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    url_preview_api_url_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UrlPreviewIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UrlPreviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    healthz_healthz_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
     api_health_api_health_get: {
         parameters: {
             query?: never;
@@ -287,6 +1908,191 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+        };
+    };
+    robots_robots_txt_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/plain": string;
+                };
+            };
+        };
+    };
+    demo_page_demo_changing_page_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+        };
+    };
+    bot_page_bot_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/html": string;
+                };
+            };
+        };
+    };
+    fetch_screenshot_api_media_fetch__fetch_id__screenshot_png_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fetch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    snapshot_crop_api_media_snapshot__snapshot_id__crop_png_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                snapshot_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    snapshot_thumb_api_media_snapshot__snapshot_id__thumb_jpg_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                snapshot_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    diff_image_api_media_diff__a___b__png_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                a: number;
+                b: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
