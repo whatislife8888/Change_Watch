@@ -29,6 +29,9 @@ from .config import settings
 from .errors import error_json
 
 DEMO_PATH = "/demo/changing-page"
+# Our own demo pages (only these paths on our own host get past the SSRF guard, and only when enabled):
+# the noisy/changing page, a fake bot wall and a fake outage, so design question 1 can be shown live.
+DEMO_PATHS = {DEMO_PATH, "/demo/bot-check", "/demo/outage"}
 _DNS_TTL_SECONDS = 300
 _dns_cache: dict[str, tuple[float, list[str]]] = {}
 
@@ -80,11 +83,11 @@ def own_hosts() -> set[str]:
 
 
 def is_demo_url(url: str) -> bool:
-    """The one exception to the SSRF guard: our own /demo/changing-page, when ALLOW_DEMO_PAGE is on."""
+    """The one exception to the SSRF guard: our own /demo/* pages, when ALLOW_DEMO_PAGE is on."""
     if not settings.allow_demo_page:
         return False
     parts = urlsplit(url)
-    return parts.path == DEMO_PATH and parts.netloc.lower() in own_hosts()
+    return parts.path in DEMO_PATHS and parts.netloc.lower() in own_hosts()
 
 
 async def check_url_is_public(url: str) -> None:

@@ -10,6 +10,9 @@ WORKDIR /web
 COPY frontend/package.json frontend/package-lock.json frontend/.npmrc ./
 RUN npm ci
 COPY frontend/ .
+# Optional build-time setting for the footer link (Render and Railway pass env vars as build args).
+ARG VITE_GITHUB_URL=""
+ENV VITE_GITHUB_URL=$VITE_GITHUB_URL
 RUN npm run build
 
 # ---------- Stage 2: backend runtime with Chromium ----------

@@ -81,3 +81,11 @@ A running record of each build phase and every decision made along the way.
 4. **Try it:** Settings → Discord → paste a webhook → Save → Send test. Email needs `SMTP_USER`/`SMTP_PASSWORD` (a Gmail App Password) or `RESEND_API_KEY` in `backend/.env`.
 5. **Words to know:** *idempotent* (doing it twice has the same effect as once), *UNIQUE constraint* (the database refuses duplicate values in a column), *webhook* (a URL you POST to so another app receives a message), *SMTP* (the protocol for sending email).
 6. **Evaluator question:** "What if the server crashes after sending but before saving that it sent?" We save first (the claim), then send. A crash between them can at worst lose one alert, never duplicate it. The alert row stays `queued` and is visible, and the next *different* change alerts normally. We chose at-most-once delivery because duplicate alerts are the main thing users hate.
+
+### Deployment decisions (15:58)
+| Decision | Why |
+|---|---|
+| Deploy target changed from Railway to **Render**, at your request (you push to GitHub and deploy from Render). Added `render.yaml` (a Blueprint: Docker web service, 1 instance, disk at `/data`, `/healthz` health check). `railway.json` stays for anyone who prefers Railway. | Same single-container design works on both. |
+| Render plan `starter` with `MAX_BROWSER_PAGES=1`, `WORKER_COUNT=2`. | Free instances can't have a disk and sleep when idle, which stops the scheduler. Starter has 512 MB of memory, so one Chromium page at a time is the safe setting. |
+| Playwright pinned to 1.63.0 (was 1.64.0) to match the newest official Docker image, `mcr.microsoft.com/playwright/python:v1.63.0-noble`. | The spec requires the pip version and the image tag to match exactly. |
+| Added `/demo/bot-check` (fake "Just a moment" wall) and `/demo/outage` (always 503) next to `/demo/changing-page`, all three whitelisted only on our own host. | Lets evaluators see design question 1 live: Blocked and Error, never a change. |

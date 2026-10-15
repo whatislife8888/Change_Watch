@@ -72,6 +72,26 @@ async def demo_page() -> HTMLResponse:
     return HTMLResponse(render_demo_page(), headers={"Cache-Control": "no-store"})
 
 
+@router.get("/demo/bot-check", response_class=HTMLResponse)
+async def demo_bot_check() -> HTMLResponse:
+    """Looks like a Cloudflare-style bot wall. ChangeWatch must report "blocked", never "changed"."""
+    if not settings.allow_demo_page:
+        raise ApiError(404, "not_found", "The demo page is turned off.")
+    return HTMLResponse(
+        "<!doctype html><html><head><title>Just a moment...</title></head><body>"
+        "<div id='challenge-form'><p>Checking your browser before accessing the site.</p>"
+        "<p>Verify you are human by completing the action below.</p></div></body></html>",
+        headers={"Cache-Control": "no-store"})
+
+
+@router.get("/demo/outage", response_class=HTMLResponse)
+async def demo_outage() -> HTMLResponse:
+    """Always fails with 503 (and a Retry-After), to show retries, backoff and status alerts."""
+    if not settings.allow_demo_page:
+        raise ApiError(404, "not_found", "The demo page is turned off.")
+    return HTMLResponse("<h1>Service unavailable</h1>", status_code=503, headers={"Retry-After": "30", "Cache-Control": "no-store"})
+
+
 @router.get("/bot", response_class=HTMLResponse)
 async def bot_page() -> str:
     """Explains our crawler to site owners who see "ChangeWatchBot" in their logs."""

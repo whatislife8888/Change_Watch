@@ -1,0 +1,62 @@
+# render.yaml — Render "Blueprint": one Docker web service with a persistent disk at /data.
+# In Render: New → Blueprint → pick this repo. Render reads this file, asks for the values marked
+# `sync: false`, generates SECRET_KEY, builds the Dockerfile and runs it.
+#
+# Why a paid plan: Render's free instances can't attach a disk (the database and screenshots would be
+# wiped on every deploy) and they sleep when idle — which also stops the scheduler, so no checks run.
+services:
+  - type: web
+    name: changewatch
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    numInstances: 1            # exactly one: the scheduler and job queue live inside the process
+    healthCheckPath: /healthz
+    autoDeploy: true
+    disk:
+      name: changewatch-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: BASE_URL            # your Render URL, e.g. https://changewatch.onrender.com (no trailing slash)
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATA_DIR
+        value: /data
+      # Starter instances have 512 MB of memory: one Chromium page at a time keeps us well inside it.
+      - key: MAX_BROWSER_PAGES
+        value: "1"
+      - key: WORKER_COUNT
+        value: "2"
+      - key: DOMAIN_MIN_GAP_SECONDS
+        value: "10"
+      - key: CONFIRM_REFETCH
+        value: "true"
+      - key: ALLOW_DEMO_PAGE
+        value: "true"
+      - key: ADMIN_EMAIL
+        sync: false
+      # Optional: alerts and AI summaries. Leave empty and the UI shows "Not set up".
+      - key: EMAIL_PROVIDER
+        value: smtp
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: AI_MODEL
+        value: claude-haiku-5-5
+      - key: VITE_GITHUB_URL     # shown in the landing page footer (build-time)
+        sync: false

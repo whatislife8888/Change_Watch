@@ -202,3 +202,43 @@ def test_identical_screenshots_have_no_regions(tmp_path):
     a = _page(0, tmp_path, "a.png")
     result, _ = visual_diff.compare_images(a, a)
     assert result.regions == [] and result.changed_percent == 0
+
+
+# ---------- fetch classification (design question 1) ----------
+
+from app.fetcher import Fetcher, parse_retry_after  # noqa: E402
+
+
+@pytest.mark.parametrize("status,outcome,retryable", [
+    (200, None, None), (301, None, None), (404, "error", False), (410, "error", False), (500, "error", True),
+    (503, "error", True), (401, "blocked", False), (403, "blocked", False), (429, "blocked", True), (400, "error", False),
+])
+def test_status_classification(status, outcome, retryable):
+    result = Fetcher._classify_status("https://e.com", status, {})
+    if outcome is None:
+        assert result is None
+    else:
+        assert result.outcome == outcome and result.retryable == retryable
+
+
+def test_retry_after_seconds():
+    assert parse_retry_after("120") == 120
+    assert parse_retry_after(None) is None
+
+
+@pytest.mark.parametrize("title,bot,blocked", [
+    ("Just a moment...", {"textLength": 200, "sample": ""}, True),
+    ("Attention Required! | Cloudflare", {"textLength": 900, "sample": ""}, True),
+    ("Shop", {"strong": True, "textLength": 400, "sample": ""}, True),
+    ("Login", {"weak": True, "textLength": 300, "sample": ""}, True),
+    ("Big news site", {"weak": True, "textLength": 25000, "sample": "please solve the captcha to comment"}, False),
+    ("Blog", {"textLength": 5000, "sample": "welcome"}, False),
+])
+def test_bot_wall_detection(title, bot, blocked):
+    assert Fetcher._looks_like_bot_wall(title, bot) is blocked
+
+
+def test_demo_paths_whitelisted_only_on_own_host():
+    assert security.is_demo_url("http://localhost:8000/demo/bot-check")
+    assert not security.is_demo_url("http://localhost:8000/admin")
+    assert not security.is_demo_url("http://evil.example/demo/changing-page")
