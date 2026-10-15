@@ -47,3 +47,10 @@
 .copyRow { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
 .copyRow > :first-child { flex: 1 1 320px; }
 .actionsRow { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.numbers { display: flex; flex-direction: column; gap: 28px; max-width: 920px; }
+.figures { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 0; padding-bottom: 24px; border-bottom: 1px solid var(--hairline); }
+.figures div { display: flex; flex-direction: column; gap: 4px; }
+.figures dt { font-size: 13px; color: var(--text-2); }
+.figures dd { margin: 0; font-family: var(--font-display); font-size: var(--fs-32); line-height: 1.1; }
+@media (max-width: 640px) { .figures { grid-template-columns: 1fr 1fr; } }

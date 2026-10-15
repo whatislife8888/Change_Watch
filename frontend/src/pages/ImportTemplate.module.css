@@ -1,0 +1,8 @@
+.layout { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 56px; align-items: center; }
+.info { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.title { overflow-wrap: anywhere; }
+.list { margin: 0; display: flex; flex-direction: column; }
+.list div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+.list dt { color: var(--text-2); font-size: var(--fs-14); }
+.list dd { margin: 0; overflow-wrap: anywhere; font-family: var(--font-mono); font-size: 13px; }
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; justify-items: center; } .info { width: 100%; } }

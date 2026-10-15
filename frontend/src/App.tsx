@@ -22,6 +22,8 @@ const Compare = lazy(() => import('./pages/Compare'));
 const Picker = lazy(() => import('./pages/Picker'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Activity = lazy(() => import('./pages/Activity'));
+const System = lazy(() => import('./pages/System'));
+const ImportTemplate = lazy(() => import('./pages/ImportTemplate'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const queryClient = new QueryClient({
@@ -83,6 +85,8 @@ export default function App() {
               <Route path="/pages/:id/picker" element={<RequireAuth><Picker /></RequireAuth>} />
               <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
               <Route path="/activity" element={<RequireAuth><Activity /></RequireAuth>} />
+              <Route path="/system" element={<RequireAuth><System /></RequireAuth>} />
+              <Route path="/import/:token" element={<RequireAuth><ImportTemplate /></RequireAuth>} />
               <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
             </Routes>
           </Suspense>

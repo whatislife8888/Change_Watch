@@ -30,6 +30,7 @@ export type CheckQueued = S['CheckQueued'];
 export type UserSettings = S['SettingsOut'];
 export type SettingsUpdate = S['SettingsIn'];
 export type TestAlertResult = S['TestAlertOut'];
+export type Template = S['TemplateOut'];
 
 export type Sensitivity = WatchDetail['sensitivity'];
 export type KeywordMode = WatchDetail['keyword_mode'];

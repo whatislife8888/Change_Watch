@@ -1,0 +1,27 @@
+.figure { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.caption { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-weight: 500; }
+.toggle { border: 0; background: none; color: var(--blued-ink); font: inherit; font-size: var(--fs-14); font-weight: 500; min-height: 36px; padding: 0; }
+.toggle:hover { text-decoration: underline; }
+.chart { width: 100%; min-height: 280px; }
+.chart :global(.recharts-surface) { overflow: visible; }
+.tooltip {
+  display: grid;
+  grid-template-columns: 14px auto;
+  gap: 2px 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--shadow-menu);
+  font-size: 13px;
+  color: var(--text);
+}
+.tipKey { width: 14px; height: 2px; border-radius: 2px; background: var(--lume); }
+.tipTime, .tipChanged { grid-column: 2; color: var(--text-2); }
+.tipChanged::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--salmon); margin-right: 6px; }
+.tableWrap { max-height: 320px; overflow: auto; border: 1px solid var(--hairline); border-radius: 12px; }
+.table { width: 100%; border-collapse: collapse; font-size: var(--fs-14); }
+.table th { position: sticky; top: 0; background: var(--surface); text-align: left; font-weight: 500; color: var(--text-2); padding: 8px 12px; border-bottom: 1px solid var(--hairline-strong); }
+.table td { padding: 8px 12px; border-bottom: 1px solid var(--hairline); }
+.spark { display: block; overflow: visible; }

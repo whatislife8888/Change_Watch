@@ -460,6 +460,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/templates/{token}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Template */
+        get: operations["get_template_api_templates__token__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/templates/{token}/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import Template */
+        post: operations["import_template_api_templates__token__import_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/url/preview": {
         parameters: {
             query?: never;
@@ -1040,6 +1074,51 @@ export interface components {
             is_baseline: boolean;
             /** Is First */
             is_first: boolean;
+        };
+        /** TemplateConfig */
+        TemplateConfig: {
+            /** Url */
+            url: string;
+            /** Name */
+            name: string;
+            /** Watch Selectors */
+            watch_selectors: string[];
+            /** Ignore Selectors */
+            ignore_selectors: string[];
+            /** Ignore Carousels */
+            ignore_carousels: boolean;
+            /** Keywords */
+            keywords: string[];
+            /**
+             * Keyword Mode
+             * @enum {string}
+             */
+            keyword_mode: "off" | "appear" | "disappear" | "any";
+            /**
+             * Sensitivity
+             * @enum {string}
+             */
+            sensitivity: "low" | "medium" | "high";
+            /** Interval Minutes */
+            interval_minutes: number;
+            /** Number Selector */
+            number_selector?: string | null;
+            /** Number Regex */
+            number_regex?: string | null;
+        };
+        /** TemplateOut */
+        TemplateOut: {
+            /** Token */
+            token: string;
+            config: components["schemas"]["TemplateConfig"];
+            /** Owner Name */
+            owner_name: string;
+            /** Domain */
+            domain: string;
+            /** Dial Seed */
+            dial_seed: string;
+            /** Created At */
+            created_at: string;
         };
         /** TestAlertIn */
         TestAlertIn: {
@@ -2191,6 +2270,68 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TestAlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_template_api_templates__token__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    import_template_api_templates__token__import_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                token: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
                 };
             };
             /** @description Validation Error */
