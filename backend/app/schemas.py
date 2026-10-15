@@ -11,21 +11,9 @@ from pydantic import BaseModel, Field
 
 Sensitivity = Literal["low", "medium", "high"]
 KeywordMode = Literal["off", "appear", "disappear", "any"]
-WatchStatus = Literal["ok", "error", "blocked", "pending"]
 
 MIN_INTERVAL = 15
 MAX_INTERVAL = 1440
-
-
-# ---------- errors ----------
-
-class ErrorBody(BaseModel):
-    code: str
-    message: str
-
-
-class ErrorResponse(BaseModel):
-    error: ErrorBody
 
 
 # ---------- auth / users ----------

@@ -6,13 +6,13 @@ import type { ReactNode } from 'react';
 import s from './layout.module.css';
 import { TopBar } from './TopBar';
 
-export function PageShell({ children, flush = false }: { children: ReactNode; flush?: boolean }) {
+export function PageShell({ children }: { children: ReactNode }) {
   return (
     <>
       <a href="#main" className="skip-link">Skip to content</a>
       <TopBar />
-      <main id="main" className={flush ? s.mainFlush : s.main} tabIndex={-1}>
-        {flush ? children : <div className="container">{children}</div>}
+      <main id="main" className={s.main} tabIndex={-1}>
+        <div className="container">{children}</div>
       </main>
     </>
   );

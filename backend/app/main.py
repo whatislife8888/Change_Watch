@@ -16,31 +16,31 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import truststore
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, Response
+
+from . import checker, db, media, rss
+from .config import settings
+from .errors import ApiError, install_error_handlers
+from .fetcher import fetcher
+from .jobqueue import queue
+from .politeness import politeness
+from .routes import auth as auth_routes
+from .routes import events as event_routes
+from .routes import picker as picker_routes
+from .routes import settings as settings_routes
+from .routes import templates as template_routes
+from .routes import public as public_routes
+from .routes import stats as stats_routes
+from .routes import watches as watch_routes
+from .scheduler import Scheduler, reset_stuck_targets
+from .security import OriginCheckMiddleware
 
 # Use the operating system's certificate store for HTTPS (robots.txt, Telegram, Discord, AI...).
 # Why: on networks that inspect TLS, Python's bundled certificates reject valid connections.
+# Done before any HTTPS client is created (they're all created per request, after startup).
 truststore.inject_into_ssl()
-
-from fastapi import FastAPI, Request  # noqa: E402
-from fastapi.middleware.cors import CORSMiddleware  # noqa: E402
-from fastapi.responses import FileResponse, Response  # noqa: E402
-
-from . import checker, db, media, rss  # noqa: E402
-from .config import settings  # noqa: E402
-from .errors import ApiError, install_error_handlers  # noqa: E402
-from .fetcher import fetcher  # noqa: E402
-from .jobqueue import queue  # noqa: E402
-from .politeness import politeness  # noqa: E402
-from .routes import auth as auth_routes  # noqa: E402
-from .routes import events as event_routes  # noqa: E402
-from .routes import picker as picker_routes  # noqa: E402
-from .routes import settings as settings_routes  # noqa: E402
-from .routes import templates as template_routes  # noqa: E402
-from .routes import public as public_routes  # noqa: E402
-from .routes import stats as stats_routes  # noqa: E402
-from .routes import watches as watch_routes  # noqa: E402
-from .scheduler import Scheduler, reset_stuck_targets  # noqa: E402
-from .security import OriginCheckMiddleware  # noqa: E402
 
 # The web app manifest needs its own content type for browsers to treat the site as installable.
 mimetypes.add_type("application/manifest+json", ".webmanifest")
@@ -90,7 +90,7 @@ FRONTEND = Path(settings.frontend_dist) if settings.frontend_dist else None
 
 
 @app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
-async def spa(full_path: str, request: Request) -> Response:
+async def spa(full_path: str) -> Response:
     """Serve the built frontend: a real file if it exists, otherwise index.html (SPA fallback)."""
     if full_path.startswith(("api/", "rss/")):
         raise ApiError(404, "not_found", "Not found.")

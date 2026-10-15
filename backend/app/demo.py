@@ -59,7 +59,7 @@ def render_demo_page() -> str:
     viewers = random.randint(120, 980)
     tip = random.choice(TIPS)
     promo = random.choice(PROMOS)
-    price_text = f"₹{price:,}".replace(",", ",")
+    price_text = f"₹{price:,}"
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Campus Tech Fest — notice board</title>

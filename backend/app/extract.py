@@ -161,11 +161,6 @@ def extract(html: str, watch_selectors: list[str], ignore_selectors: list[str], 
     return Extracted(text, title, missing, invalid)
 
 
-def page_title(html: str) -> str:
-    soup = parse(html)
-    return soup.title.get_text(strip=True)[:120] if soup.title else ""
-
-
 def visible_text_of_raw_html(html: str) -> str:
     """Quick text of the server-sent HTML (no JavaScript). Used to decide if a page is static."""
     soup = parse(html)
@@ -240,7 +235,7 @@ def element_for_line(soup: BeautifulSoup, raw_line: str) -> Tag | None:
             el = text_node.parent
             while isinstance(el, Tag) and el.name not in BLOCK_TAGS and el.parent is not None:
                 el = el.parent
-            if isinstance(el, Tag) and el.name not in ("html", "body", "main"):
-                if needle[:60] in SPACES.sub(" ", el.get_text(" ")):
-                    return el
+            if (isinstance(el, Tag) and el.name not in ("html", "body", "main")
+                    and needle[:60] in SPACES.sub(" ", el.get_text(" "))):
+                return el
     return None

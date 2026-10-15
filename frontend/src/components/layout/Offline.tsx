@@ -14,7 +14,7 @@ import { Button } from '../ui/Button';
 import s from './Offline.module.css';
 
 /** True while the browser reports a network connection. */
-export function useOnline(): boolean {
+function useOnline(): boolean {
   return useSyncExternalStore(
     (onChange) => {
       window.addEventListener('online', onChange);

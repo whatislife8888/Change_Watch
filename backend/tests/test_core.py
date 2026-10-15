@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 
 from app import differ, extract, numbers, security, summarize, visual_diff
 from app.checker import keyword_hit
+from app.fetcher import Fetcher, parse_retry_after
 from app.urlnorm import InvalidURL, dial_seed, normalise_url, registrable_domain
 
 
@@ -205,8 +206,6 @@ def test_identical_screenshots_have_no_regions(tmp_path):
 
 
 # ---------- fetch classification (design question 1) ----------
-
-from app.fetcher import Fetcher, parse_retry_after  # noqa: E402
 
 
 @pytest.mark.parametrize("status,outcome,retryable", [

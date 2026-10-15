@@ -8,17 +8,15 @@ event loop never blocks on disk I/O).
 Key decisions (explained for evaluators):
 - WAL mode ("write-ahead log"): readers don't block the writer and vice versa, so the dashboard can
   read while a worker is saving a snapshot.
-- Autocommit (isolation_level=None): every statement commits on its own. We rarely need multi-statement
-  transactions; where we do, `transaction()` takes a lock so two coroutines can't interleave them.
+- Autocommit (isolation_level=None): every statement commits on its own. No feature needs a
+  multi-statement transaction, which keeps one shared connection simple and safe.
 - Migrations: an ordered list of SQL scripts plus a `schema_version` table. On startup we run only the
   scripts newer than the stored version, so restarts and upgrades never break an existing database.
 """
-import asyncio
 import json
 import sqlite3
-from contextlib import asynccontextmanager
 from datetime import datetime, timezone
-from typing import Any, AsyncIterator
+from typing import Any
 
 import aiosqlite
 
@@ -183,7 +181,6 @@ MIGRATIONS: list[str] = [
 ]
 
 _conn: aiosqlite.Connection | None = None
-_tx_lock = asyncio.Lock()
 
 
 def now_iso() -> str:
@@ -295,21 +292,3 @@ async def insert_unique(sql: str, params: tuple | list = ()) -> int | None:
         return await execute(sql, params)
     except sqlite3.IntegrityError:
         return None
-
-
-@asynccontextmanager
-async def transaction() -> AsyncIterator[aiosqlite.Connection]:
-    """Run several statements atomically (all or nothing).
-
-    Why the lock: all coroutines share one connection, so without it two coroutines could interleave
-    their BEGIN/COMMIT and accidentally commit each other's half-finished work.
-    """
-    async with _tx_lock:
-        db = conn()
-        await db.execute("BEGIN")
-        try:
-            yield db
-            await db.execute("COMMIT")
-        except BaseException:
-            await db.execute("ROLLBACK")
-            raise

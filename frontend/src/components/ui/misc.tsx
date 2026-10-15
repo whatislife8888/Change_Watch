@@ -25,7 +25,7 @@ export function EmptyState({ title, body, children, visual }: { title: string; b
 
 export type StatusKind = 'ok' | 'error' | 'blocked' | 'pending' | 'paused' | 'running';
 
-export const STATUS_WORDS: Record<StatusKind, string> = {
+const STATUS_WORDS: Record<StatusKind, string> = {
   ok: 'OK',
   error: 'Error',
   blocked: 'Blocked',

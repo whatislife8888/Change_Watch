@@ -25,7 +25,9 @@ def parse_number(text: str) -> float | None:
     if not match:
         return None
     raw = match.group(0)
-    negative = raw.strip().startswith(("-", "−", "–", "(")) and (raw.strip().startswith("(") is False or raw.strip().endswith(")"))
+    stripped = raw.strip()
+    # A minus sign, or accounting style "(1,200)", means negative.
+    negative = stripped.startswith(("-", "−", "–")) or (stripped.startswith("(") and stripped.endswith(")"))
     lower = raw.lower()
     multiplier = 1.0
     for suffix in ("crore", "lakh", "cr"):

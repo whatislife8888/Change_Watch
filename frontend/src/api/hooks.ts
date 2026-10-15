@@ -9,7 +9,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from './client';
 import type {
-  ActivityItem, AdminStats, CheckLogItem, CheckQueued, CompareResult, NumbersOut, OverviewStats, SnapshotDetail,
+  ActivityItem, AdminStats, CheckLogItem, CheckQueued, CompareResult, NumbersOut, OverviewStats,
   SettingsUpdate, SnapshotItem, TestAlertResult, UrlPreview, User, UserSettings, WatchCreate, WatchDetail, WatchPatch,
   WatchSummary,
 } from './types';
@@ -19,7 +19,6 @@ export const keys = {
   watches: ['watches'] as const,
   watch: (id: number) => ['watch', id] as const,
   snapshots: (id: number) => ['snapshots', id] as const,
-  snapshot: (id: number) => ['snapshot', id] as const,
   compare: (id: number, a: number, b: number) => ['compare', id, a, b] as const,
   checks: (id: number) => ['checks', id] as const,
   numbers: (id: number) => ['numbers', id] as const,
@@ -169,10 +168,6 @@ export function useCheckNow() {
 
 export function useSnapshots(id: number) {
   return useQuery({ queryKey: keys.snapshots(id), queryFn: () => api<SnapshotItem[]>(`/api/watches/${id}/snapshots?limit=100`), enabled: id > 0 });
-}
-
-export function useSnapshot(id: number | null) {
-  return useQuery({ queryKey: keys.snapshot(id ?? 0), queryFn: () => api<SnapshotDetail>(`/api/snapshots/${id}`), enabled: !!id });
 }
 
 export function useCompare(id: number, a: number | null, b: number | null) {

@@ -334,9 +334,7 @@ class Fetcher:
         short_page = bot.get("textLength", 0) < 1500
         if bot.get("strong") and bot.get("textLength", 0) < 3000:
             return True
-        if short_page and (bot.get("weak") or any(p in bot.get("sample", "") for p in BOT_WALL_PHRASES)):
-            return True
-        return False
+        return short_page and (bot.get("weak") or any(p in bot.get("sample", "") for p in BOT_WALL_PHRASES))
 
 
 fetcher = Fetcher()

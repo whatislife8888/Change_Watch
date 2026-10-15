@@ -86,12 +86,10 @@
   --font-display: 'Zodiak', 'Bodoni Moda', Georgia, serif;
   --font-text: 'Switzer', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
-  --fs-12: 12px; --fs-14: 14px; --fs-16: 16px; --fs-18: 18px; --fs-21: 21px;
+  --fs-14: 14px; --fs-16: 16px; --fs-18: 18px; --fs-21: 21px;
   --fs-24: 24px; --fs-32: 32px; --fs-44: 44px; --fs-60: 60px; --fs-84: 84px;
 
-  /* ---- Space, radii, layout ---- */
-  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
-  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+  /* ---- Radii, layout ---- */
   --radius-panel: 20px;
   --radius-input: 12px;
   --radius-chip: 8px;
@@ -104,7 +102,6 @@
   --ease-mech: cubic-bezier(.65, 0, .35, 1);
   --dur-press: 160ms;
   --dur-ui: 280ms;
-  --dur-route: 600ms;
   --dur-load: 900ms;
 }
 
@@ -176,7 +173,6 @@
   :root {
     --dur-press: 80ms;
     --dur-ui: 120ms;
-    --dur-route: 120ms;
     --dur-load: 0ms;
   }
 }

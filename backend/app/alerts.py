@@ -332,14 +332,14 @@ def spawn(coro) -> None:
 
 
 async def dispatch(user: dict, watch: dict, kind: str, material_base: str, msg: AlertMessage,
-                   snapshot_id: int | None = None) -> int:
+                   snapshot_id: int | None = None, extra_payload: dict | None = None) -> int:
     """Claim + deliver on every channel the watch has enabled. Returns how many new alerts were claimed."""
     claimed = 0
     for channel in CHANNELS:
         if not watch.get(f"alert_{channel}"):
             continue
         alert_id = await claim(user, watch["id"], snapshot_id, kind, channel, f"{material_base}:{channel}",
-                               payload={"subject": msg.subject()})
+                               payload={**(extra_payload or {}), "subject": msg.subject()})
         if alert_id is None:
             continue  # already handled — this is the dedupe at work
         claimed += 1
@@ -425,18 +425,8 @@ async def on_status(watch: dict, status: str, message: str) -> None:
         material = f"status:{watch['id']}:{status}:{today}"
     msg = AlertMessage(kind="status", page_name=name, page_url=target["url"], headline=headline,
                        summary=f"Status alert, not a content change. {message}", link=link, when=local_time(user))
-    for channel in CHANNELS:
-        if not watch.get(f"alert_{channel}"):
-            continue
-        alert_id = await claim(user, watch["id"], None, "status", channel, f"{material}:{channel}",
-                               payload={"status": "ok" if status == "ok" else status, "subject": msg.subject()})
-        if alert_id is None:
-            continue
-        reason = channel_ready(channel, user)
-        if reason:
-            await db.execute("UPDATE alerts SET status = 'failed', error = ? WHERE id = ?", (reason, alert_id))
-            continue
-        spawn(deliver(alert_id, channel, user, msg))
+    # The stored status lets a later recovery know a "can't reach" alert was actually sent.
+    await dispatch(user, watch, "status", material, msg, extra_payload={"status": status})
 
 
 async def on_flapping(watch: dict) -> None:

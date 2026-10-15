@@ -22,7 +22,6 @@
   font-size: var(--fs-14);
 }
 .dialCol { display: flex; justify-content: center; align-items: center; min-width: 0; width: 100%; }
-.caption { margin-top: 20px; color: var(--text-2); font-size: var(--fs-14); text-align: center; }
 
 @media (max-width: 860px) {
   .wrap { grid-template-columns: 1fr; gap: 40px; padding-top: 32px; }

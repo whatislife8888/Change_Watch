@@ -1,9 +1,9 @@
 /**
  * Input.tsx — form fields with a label, an optional hint and an error message, all wired up for
- * screen readers (aria-describedby / aria-invalid). Also: TextArea, Checkbox and Switch.
+ * screen readers (aria-describedby / aria-invalid). Also: Checkbox and Switch.
  */
 import clsx from 'clsx';
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from 'react';
+import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react';
 import s from './ui.module.css';
 
 interface FieldProps {
@@ -43,23 +43,6 @@ export const Input = forwardRef<HTMLInputElement, FieldProps & InputHTMLAttribut
     );
   },
 );
-
-/** A multi-line text input. */
-export function TextArea({ label, hint, error, className, id, ...rest }: FieldProps & TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  const autoId = useId();
-  const fieldId = id ?? autoId;
-  return (
-    <Field label={label} hint={hint} error={error} id={fieldId}>
-      <textarea
-        id={fieldId}
-        className={clsx(s.textarea, error && s.invalid, className)}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? `${fieldId}-error` : hint ? `${fieldId}-hint` : undefined}
-        {...rest}
-      />
-    </Field>
-  );
-}
 
 /** A checkbox with its label text to the right. */
 export function Checkbox({ label, hint, ...rest }: { label: ReactNode; hint?: ReactNode } & InputHTMLAttributes<HTMLInputElement>) {

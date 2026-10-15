@@ -44,11 +44,6 @@
 }
 .navLink:hover { color: var(--text); }
 .navActive { color: var(--text); }
-.navActive::after {
-  content: '';
-  display: block;
-  position: relative;
-}
 .spacer { flex: 1; }
 .tools { display: flex; align-items: center; gap: 4px; }
 .iconBtn {
@@ -93,7 +88,6 @@
 }
 
 .main { flex: 1; padding: 40px 0 96px; }
-.mainFlush { flex: 1; }
 
 .footer {
   border-top: 1px solid var(--hairline);

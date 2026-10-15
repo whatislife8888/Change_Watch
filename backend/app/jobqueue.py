@@ -21,7 +21,6 @@ import asyncio
 import itertools
 import logging
 import random
-import time
 from dataclasses import dataclass, field
 from typing import Awaitable, Callable
 
@@ -50,7 +49,6 @@ class Job:
     seq: int
     target_id: int = field(compare=False)
     reason: str = field(compare=False)
-    enqueued_at: float = field(compare=False, default_factory=time.time)
 
 
 Handler = Callable[[int, int, bool, int], Awaitable[AttemptResult]]

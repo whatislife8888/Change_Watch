@@ -40,7 +40,7 @@
   --my: 24%;
 }
 
-/* 2. Face: fumé gradient + sunburst rays (tex-sunburst) + inner shadow so it sits below the case. */
+/* 2. Face: fumé gradient (::before) + sunburst rays (::after) + inner shadow so it sits below the case. */
 .face {
   position: relative;
   width: 100%;
@@ -58,7 +58,7 @@
   background: radial-gradient(circle at 50% 42%, var(--dial-face-1) 0%, var(--dial-face-2) 58%, var(--dial-face-3) 100%);
   z-index: 0;
 }
-/* The sunburst rays come from .tex-sunburst's background-image, layered over ::before via this ::after. */
+/* Sunburst brushing: very fine alternating rays radiating from the centre. */
 .face::after {
   content: '';
   position: absolute;

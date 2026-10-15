@@ -524,8 +524,9 @@ async def check_target(target_id: int, attempt: int, is_last: bool, priority: in
 async def _check(target: dict, watches: list[dict], due: list[dict], attempt: int, is_last: bool, priority: int,
                  started_iso: str, started: float) -> AttemptResult:
     url = target["url"]
-    domain = display_domain(url)
-    elapsed = lambda: int((time.monotonic() - started) * 1000)  # noqa: E731
+
+    def elapsed() -> int:
+        return int((time.monotonic() - started) * 1000)
 
     # 2. Public-only guard (re-checked every time) and robots.txt.
     try:
@@ -546,10 +547,10 @@ async def _check(target: dict, watches: list[dict], due: list[dict], attempt: in
         return AttemptResult()
 
     # 3. Conditional pre-check (only for static pages where the HTML holds the content).
-    if priority != 0 and target["static_html"] and (target["etag"] or target["last_modified"]):
-        if await conditional_unchanged(target):
-            await finish_not_modified(target, watches, due, started_iso, elapsed())
-            return AttemptResult()
+    if (priority != 0 and target["static_html"] and (target["etag"] or target["last_modified"])
+            and await conditional_unchanged(target)):
+        await finish_not_modified(target, watches, due, started_iso, elapsed())
+        return AttemptResult()
 
     # 4. Render once for everyone.
     selectors = selectors_needed(watches)
@@ -769,7 +770,7 @@ async def after_change(watch: dict, snapshot: dict, previous_id: int | None, ev:
     # Keyword mode filters alerts only — the snapshot is always saved so history stays complete.
     if watch["keyword_mode"] != "off" and db.from_json(watch["keywords"], []) and not snapshot["keyword_hit"]:
         return
-    preview = list(zip(["+"] * len(snapshot["_added"]), snapshot["_added"])) + list(zip(["-"] * len(snapshot["_removed"]), snapshot["_removed"]))
+    preview = [("+", line) for line in snapshot["_added"]] + [("-", line) for line in snapshot["_removed"]]
     await alerts.on_change(watch, snapshot, previous_id, preview[:5])
 
 

@@ -40,7 +40,6 @@ class Scheduler:
     def __init__(self, queue: JobQueue) -> None:
         self.queue = queue
         self._tasks: list[asyncio.Task] = []
-        self.last_tick: str | None = None
 
     def start(self) -> None:
         from . import digest, maintenance  # imported here to avoid import cycles at module load
@@ -69,7 +68,6 @@ class Scheduler:
     async def tick(self) -> int:
         """Enqueue every due target. Returns how many were enqueued."""
         now = db.now_iso()
-        self.last_tick = now
         rows = await db.fetch_all(
             """
             SELECT t.id FROM targets t

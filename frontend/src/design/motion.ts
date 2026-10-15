@@ -9,14 +9,11 @@ import { useEffect, useState } from 'react';
 
 /** Cubic-bezier easings as [x1, y1, x2, y2] arrays (Motion's format). */
 export const easeOut = [0.22, 1, 0.36, 1] as const;
-export const easeMech = [0.65, 0, 0.35, 1] as const;
 
 /** Durations in seconds (Motion uses seconds; CSS tokens use ms). */
 export const dur = {
   press: 0.16,
   ui: 0.28,
-  route: 0.6,
-  load: 0.9,
 } as const;
 
 /** The spring used for the loupe and dial tilt: stiff enough to feel precise, damped so it never wobbles. */

@@ -54,7 +54,7 @@ async def picker_frame(watch_id: int, token: str = Query(...)) -> HTMLResponse:
         body, nonce = message_page("This picker session expired. Reload the page to start a new one.")
         return HTMLResponse(body, headers={"Content-Security-Policy": build_csp(nonce)})
     except BadSignature:
-        raise ApiError(403, "bad_token", "Invalid picker link.")
+        raise ApiError(403, "bad_token", "Invalid picker link.") from None
     if data.get("w") != watch_id:
         raise ApiError(403, "bad_token", "Invalid picker link.")
     row = await get_watch_row(watch_id, data["u"])
@@ -98,7 +98,9 @@ async def save_selectors(watch_id: int, body: SelectorsIn, user: dict = Depends(
     row = await get_watch_row(watch_id, user["id"])
     if not row:
         raise ApiError(404, "watch_not_found", "That page isn't in your list.")
-    clean = lambda items: [s.strip() for s in items if s and s.strip()][:20]  # noqa: E731
+    def clean(items: list[str]) -> list[str]:
+        return [s.strip() for s in items if s and s.strip()][:20]
+
     watch_sel, ignore_sel = clean(body.watch_selectors), clean(body.ignore_selectors)
     number_sel = (body.number_selector or "").strip() or None
     for sel in watch_sel + ignore_sel + ([number_sel] if number_sel else []):

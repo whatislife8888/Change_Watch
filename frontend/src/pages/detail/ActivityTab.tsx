@@ -20,7 +20,7 @@ const WORDS: Record<string, [string, StatusKind]> = {
   robots_disallowed: ['Disallowed by robots.txt', 'blocked'],
 };
 
-export function outcomeWords(item: Pick<CheckLogItem, 'outcome' | 'detail'>): [string, StatusKind] {
+function outcomeWords(item: Pick<CheckLogItem, 'outcome' | 'detail'>): [string, StatusKind] {
   if (item.outcome === 'blocked' && item.detail?.includes('bot check')) return ['Bot check shown', 'blocked'];
   return WORDS[item.outcome] ?? [item.outcome, 'pending'];
 }
