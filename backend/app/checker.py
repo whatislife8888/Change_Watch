@@ -530,6 +530,14 @@ async def _check(target: dict, watches: list[dict], due: list[dict], attempt: in
     # 2. Public-only guard (re-checked every time) and robots.txt.
     try:
         await security.check_url_is_public(url)
+    except security.DnsFailure:
+        # A page that resolved before but doesn't now: almost always a temporary network/DNS problem.
+        error = "the address couldn't be found (DNS lookup failed)"
+        if not is_last:
+            await log_check(target["id"], None, "error", attempt, f"Attempt {attempt} failed: {error}. Retrying.", started_iso, elapsed())
+            return AttemptResult(retryable=True)
+        await apply_failure(target, due, "error", error, attempt, started_iso, elapsed())
+        return AttemptResult()
     except security.UnsafeURL as exc:
         await apply_failure(target, due, "unsafe", str(exc), attempt, started_iso, elapsed())
         return AttemptResult()

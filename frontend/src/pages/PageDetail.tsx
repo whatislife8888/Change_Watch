@@ -6,7 +6,7 @@
  * dashboard visually grows it into this page (Motion shared-element transition).
  */
 import { ArrowLeft, ArrowSquareOut, DotsThreeVertical } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ApiError } from '../api/client';
@@ -23,9 +23,11 @@ import { useNow } from '../lib/useNow';
 import { jewelFor, statusKindFor } from '../lib/watchStatus';
 import { useEngraveKey } from '../realtime/useEvents';
 import { ActivityTab } from './detail/ActivityTab';
-import { NumbersTab } from './detail/NumbersTab';
 import { SettingsTab } from './detail/SettingsTab';
 import s from './PageDetail.module.css';
+
+// The chart library is large; load it only when someone opens the Numbers tab.
+const NumbersTab = lazy(() => import('./detail/NumbersTab').then((m) => ({ default: m.NumbersTab })));
 
 type Tab = 'history' | 'numbers' | 'activity' | 'settings';
 
@@ -162,7 +164,7 @@ export default function PageDetail() {
             ? <Timeline watchId={watch.id} items={snapshots} timeZone={tz} />
             : <p className="muted">The first version appears here a few seconds after the first check.</p>
         )}
-        {tab === 'numbers' && <NumbersTab watch={watch} timeZone={tz} />}
+        {tab === 'numbers' && <Suspense fallback={<Skeleton height={280} />}><NumbersTab watch={watch} timeZone={tz} /></Suspense>}
         {tab === 'activity' && <ActivityTab watchId={watch.id} timeZone={tz} />}
         {tab === 'settings' && <SettingsTab key={watch.id} watch={watch} />}
       </div>

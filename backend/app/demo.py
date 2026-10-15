@@ -21,15 +21,25 @@ from datetime import datetime, timedelta, timezone
 
 IST = timezone(timedelta(hours=5, minutes=30))
 
+# (headline, ticket price, a details paragraph). Each 5-minute change is well over 100 characters, so it
+# still counts as real even after the flapping guard raises this page's threshold to "low".
 ANNOUNCEMENTS = [
-    ("Registrations are open for the winter hackathon", 79900),
-    ("Keynote speaker confirmed: Dr. Meera Iyer on edge AI", 74900),
-    ("Venue moved to the Anna Auditorium, second floor", 74900),
-    ("Workshop slots added for Saturday afternoon", 69900),
-    ("Early-bird pricing extended for student teams", 64900),
-    ("Mentor list published: 24 industry mentors", 69900),
-    ("Final round will be streamed live on the college channel", 72900),
-    ("Prize pool increased to ₹5,00,000", 72900),
+    ("Registrations are open for the winter hackathon", 79900,
+     "Teams can register on the portal until the deadline. Each team needs a mentor from the faculty list and a short project idea."),
+    ("Keynote speaker confirmed: Dr. Meera Iyer on edge AI", 74900,
+     "Dr. Iyer leads the embedded systems lab and will talk about running language models on tiny devices, followed by a Q&A session."),
+    ("Venue moved to the Anna Auditorium, second floor", 74900,
+     "The main hall is being renovated, so all sessions move to the Anna Auditorium. Lifts are available near the east entrance."),
+    ("Workshop slots added for Saturday afternoon", 69900,
+     "Three new workshops cover web security, Rust for beginners and designing with accessibility in mind. Seats are limited to forty each."),
+    ("Early-bird pricing extended for student teams", 64900,
+     "Student teams that register this week keep the early-bird price. Bring a valid college ID to the help desk on the first morning."),
+    ("Mentor list published: 24 industry mentors", 69900,
+     "Mentors from product companies and startups will hold office hours on day two. Book a slot from the schedule page after registering."),
+    ("Final round will be streamed live on the college channel", 72900,
+     "Finalists present for eight minutes each, followed by questions from the judges. Remote viewers can vote for the audience award."),
+    ("Prize pool increased to ₹5,00,000", 72900,
+     "The top three teams share the prize pool, and two special awards go to the best first-year team and the most accessible design."),
 ]
 TIPS = [
     "Commit early, commit often.", "Read the error message twice.", "Name things for what they do.",
@@ -43,7 +53,7 @@ def render_demo_page() -> str:
     """Build the HTML for one load of the demo page."""
     now = datetime.now(IST)
     bucket = int(time.time() // 300)  # changes every 5 minutes
-    headline, price = ANNOUNCEMENTS[bucket % len(ANNOUNCEMENTS)]
+    headline, price, details = ANNOUNCEMENTS[bucket % len(ANNOUNCEMENTS)]
     deadline = (now + timedelta(days=5 + bucket % 7)).strftime("%d %b")
     token = secrets.token_hex(12)
     viewers = random.randint(120, 980)
@@ -76,6 +86,7 @@ def render_demo_page() -> str:
   <section id="notice">
     <h2>{html.escape(headline)}</h2>
     <p>Registrations close {deadline}. Teams of two to four.</p>
+    <p>{html.escape(details)}</p>
     <p class="price">Team pass: {price_text}</p>
   </section>
   <section id="schedule">

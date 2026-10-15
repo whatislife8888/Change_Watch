@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { ApiError } from '../api/client';
 import { useCheckNow, useDeleteWatch, useMe, useOverview, useUpdateWatch, useWatches } from '../api/hooks';
 import type { WatchSummary } from '../api/types';
-import { Sparkline, numberFormat } from '../components/charts/NumberChart';
+import { Sparkline } from '../components/charts/Sparkline';
 import { Dial } from '../components/dial/Dial';
 import { PageShell } from '../components/layout/PageShell';
 import { Movement } from '../components/movement/Movement';
@@ -118,7 +118,7 @@ function Row({ w, onDelete, now }: { w: WatchSummary; onDelete: (w: WatchSummary
         <Link to={`/pages/${w.id}`} className={s.rowName}>{w.name}</Link>
         <span className={s.rowDomain}>{w.domain}</span>
         {w.number_spark.length > 1 && (
-          <span className={s.rowNumber}><Sparkline values={w.number_spark} /> <span className="num">{w.number_latest !== null ? numberFormat.format(w.number_latest) : ''}</span></span>
+          <span className={s.rowNumber}><Sparkline values={w.number_spark} /> <span className="num">{w.number_latest !== null ? new Intl.NumberFormat('en-IN', { maximumFractionDigits: 2 }).format(w.number_latest) : ''}</span></span>
         )}
       </td>
       <td data-label="Status"><StatusText status={statusKindFor(w)} /></td>

@@ -40,6 +40,11 @@ class UnsafeURL(ValueError):
     """Raised (with a user-facing message) when a URL points somewhere we must not fetch."""
 
 
+class DnsFailure(UnsafeURL):
+    """The hostname couldn't be resolved. When adding a page this is a typo; for a page we already watch
+    it's usually a temporary network problem, so the checker retries instead of giving up."""
+
+
 def is_public_ip(ip_text: str) -> bool:
     """True only for ordinary public internet addresses."""
     try:
@@ -105,7 +110,7 @@ async def check_url_is_public(url: str) -> None:
     try:
         ips = await resolve_host(host)
     except (socket.gaierror, UnicodeError, OSError) as exc:
-        raise UnsafeURL(f"We couldn't find {host}. Check the address for typos.") from exc
+        raise DnsFailure(f"We couldn't find {host}. Check the address for typos.") from exc
     if not ips or not all(is_public_ip(ip) for ip in ips):
         raise UnsafeURL("That address points to a private network, so it can't be watched.")
 
