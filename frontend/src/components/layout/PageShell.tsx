@@ -26,7 +26,7 @@ export function Footer() {
     <footer className={s.footer}>
       <div className={`container ${s.footerInner}`}>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text)' }}>ChangeWatch</span>
-        <span>Made by Kushagra Singhal</span>
+        <span>Made by DEV VACHHANI</span>
         {GITHUB_URL && <a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>}
         <a href="/bot">About our crawler</a>
       </div>

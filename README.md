@@ -8,7 +8,7 @@ you by email, Telegram or Discord, once per real change, with a one-line summary
 word-level and screenshot comparison. Every page you watch becomes its own watch dial, engraved with
 a guilloché pattern generated from its address.
 
-Built for VinnovateIT Round 1 by Kushagra Singhal.
+Built for VinnovateIT Round 1 by DEV VACHHANI.
 
 ![Dashboard: every watched page is its own dial](docs/screenshots/dashboard.png)
 
