@@ -122,6 +122,26 @@ class Politeness:
         delay = parser.crawl_delay(BOT_TOKEN)
         return RobotsEntry(now, parser, float(delay) if delay else None, ROBOTS_TTL_S)
 
+    async def restore_from_db(self) -> int:
+        """After a restart, remember when each site was last contacted.
+
+        Why: the limiter lives in memory, so without this a deploy or crash would forget that we fetched
+        a site a few seconds ago and could contact it again too soon.
+        """
+        from . import db  # local import: politeness is imported by db-free modules too
+
+        rows = await db.fetch_all(
+            "SELECT t.url, MAX(f.fetched_at) AS last FROM fetches f JOIN targets t ON t.id = f.target_id GROUP BY t.id")
+        for row in rows:
+            last = db.parse_iso(row["last"])
+            if last is None:
+                continue
+            domain = registrable_domain(row["url"])
+            # +1 s because stored times are rounded down to the second.
+            until = last.timestamp() + 1 + self.gap_for(domain)
+            self.next_allowed[domain] = max(self.next_allowed.get(domain, 0), until)
+        return len(rows)
+
     def snapshot(self) -> list[dict]:
         """For /system: each known domain, when it may next be contacted, and whether it's busy now."""
         out = []

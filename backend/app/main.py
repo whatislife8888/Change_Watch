@@ -29,6 +29,7 @@ from .config import settings  # noqa: E402
 from .errors import ApiError, install_error_handlers  # noqa: E402
 from .fetcher import fetcher  # noqa: E402
 from .jobqueue import queue  # noqa: E402
+from .politeness import politeness  # noqa: E402
 from .routes import auth as auth_routes  # noqa: E402
 from .routes import events as event_routes  # noqa: E402
 from .routes import picker as picker_routes  # noqa: E402
@@ -53,6 +54,7 @@ async def lifespan(app: FastAPI):
     reset = await reset_stuck_targets()
     if reset:
         log.info("Reset %s target(s) left running by a previous process", reset)
+    await politeness.restore_from_db()
     await fetcher.start()
     queue.set_handler(checker.check_target, checker.on_give_up)
     queue.start()

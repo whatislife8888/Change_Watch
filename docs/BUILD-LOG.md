@@ -89,3 +89,37 @@ A running record of each build phase and every decision made along the way.
 | Render plan `starter` with `MAX_BROWSER_PAGES=1`, `WORKER_COUNT=2`. | Free instances can't have a disk and sleep when idle, which stops the scheduler. Starter has 512 MB of memory, so one Chromium page at a time is the safe setting. |
 | Playwright pinned to 1.63.0 (was 1.64.0) to match the newest official Docker image, `mcr.microsoft.com/playwright/python:v1.63.0-noble`. | The spec requires the pip version and the image tag to match exactly. |
 | Added `/demo/bot-check` (fake "Just a moment" wall) and `/demo/outage` (always 503) next to `/demo/changing-page`, all three whitelisted only on our own host. | Lets evaluators see design question 1 live: Blocked and Error, never a change. |
+
+### Phase 8 — Deployment prep (done; you deploy on Render)
+1. **What I built:** Everything needed to run ChangeWatch as one container on a server: a two-stage `Dockerfile` (build the React app, then run FastAPI on Microsoft's Playwright image), `render.yaml` (Render Blueprint with a disk at `/data`), `railway.json`, and `.dockerignore`.
+2. **How it works:** (1) Render builds the Dockerfile. (2) Stage 1 runs `npm ci && npm run build`. (3) Stage 2 installs the Python packages and copies in the built frontend. (4) Uvicorn starts with exactly one worker. (5) `/healthz` reports DB, browser and queue.
+3. **Files:** `Dockerfile`, `.dockerignore`, `render.yaml`, `railway.json`.
+4. **Try it:** push to GitHub → Render → New → Blueprint → set `BASE_URL` → open `/healthz`.
+5. **Words to know:** *container* (a packaged app with everything it needs), *volume/disk* (storage that survives redeploys), *health check* (a URL the host polls to know the app is alive).
+6. **Evaluator question:** "Why only one Uvicorn worker?" The scheduler, queue and event bus live in the process; two workers would mean two schedulers (double checks) and two event buses (missed live updates).
+
+### Phase 9 — Bonus features (done 15:40)
+Number tracking with a chart (change markers, table view, thresholds), AI one-line summaries (Anthropic Messages API through raw httpx, as specified, with heuristic fallback; `thinking` is disabled for Haiku so its thinking can't use up the 80-token budget), per-page RSS, shared setups (`/import/{token}`), the System view, sparklines and the seed script.
+**Evaluator question:** "What if the AI is down?" `ai_summary()` returns `None` on any timeout, refusal or error, and the heuristic summary is used. Alerts never wait more than 15 s on it, and it's never called for ignored changes.
+
+### Phase 10 — Landing page and polish (done 16:00)
+A landing page with a hero dial that shows the current time and morphs to a typed URL's dial, an exploded-view scroll scene (Render → Filter → Compare → Alert) and the four hard questions. Lenis smooth scrolling runs on this page only. Screenshots were reviewed at 1440 and 390 px in both themes: no horizontal scroll on any of the 10 screens.
+
+### Phase 11 — Docs, README, acceptance checks (done 17:20)
+Wrote `01`–`07` docs and the README with screenshots. Acceptance checks run against the live system:
+- Two users adding the same URL with different `utm`/case share **one Target** ("fetched once for everyone").
+- `localhost`, `127.0.0.1`, `192.168.x.x`, `169.254.169.254` → `unsafe_url`; `user:pass@` → `invalid_url`; intervals 14 and 2000 → `interval_out_of_range`.
+- First snapshot in about 2 s; unchanged re-checks create no snapshot.
+- Demo page: per-load noise ignored ("learned 3 new rules"); the 5-minute change was detected by the scheduler and alerted once per channel.
+- `/demo/outage`: 3 attempts honouring Retry-After → Error, no snapshot; after 3 consecutive failures exactly **one** status alert. `/demo/bot-check` → Blocked.
+- robots.txt: `google.com/search` → "Blocked: robots.txt asks bots not to fetch this page".
+- Picker driven in a real browser (watch region, number region, test, save, re-baseline).
+- 130 pytest tests pass, including dedupe under 5 concurrent claims and the daily digest batching 3 changes into 1 message.
+
+**Bugs found and fixed during checks:**
+- Recharts needed `react-is`, which `legacy-peer-deps` didn't install. The dashboard broke in dev and the Docker build would have failed. Installed it, moved `Sparkline` out of the chart file, and lazy-loaded the chart.
+- A DNS failure on an *existing* page was treated as permanent. It is now a retryable network error.
+- The in-memory politeness limiter forgot recent requests after a restart (one 6.4 s gap). It is now restored from the fetch log on startup.
+- The flapping guard (correctly) raised the demo page's threshold. The demo's 5-minute changes are now large enough to still count, so the demo shows both behaviours.
+
+**Still needs you:** pushing to GitHub and deploying on Render (and then telling me the URL so the README can link it); optional credentials for email (Gmail App Password or Resend), Telegram (bot token) and AI (`ANTHROPIC_API_KEY`). The Docker image wasn't built locally (no Docker on this Mac), so the first Render build is its first real test.

@@ -67,3 +67,25 @@ def test_discord_webhook_validation():
     assert alerts.valid_discord_webhook("https://discord.com/api/webhooks/1/abc")
     assert not alerts.valid_discord_webhook("http://169.254.169.254/api/webhooks/1")
     assert not alerts.valid_discord_webhook("https://evil.com/api/webhooks/1/abc")
+
+
+def test_daily_digest_batches_into_one_message(database):
+    from app import digest
+
+    async def run():
+        user, watch, snap = await _setup()
+        await db.execute("UPDATE users SET digest_mode = 'daily', digest_hour = 0 WHERE id = ?", (user["id"],))
+        user = await db.fetch_one("SELECT * FROM users WHERE id = ?", (user["id"],))
+        # Three changes arrive during the day: all queued, nothing sent yet.
+        for h in ("h1", "h2", "h3"):
+            await alerts.on_change(watch, {**snap, "content_hash": h}, None, [("+", "x")])
+        queued = await db.fetch_value("SELECT COUNT(*) FROM alerts WHERE status = 'queued_digest'")
+        sent = await digest.send_digest(user, force=True)
+        digest_rows = await db.fetch_all("SELECT channel FROM alerts WHERE dedupe_key IN (SELECT dedupe_key FROM alerts WHERE payload LIKE '%\"digest\": true%')")
+        again = await digest.send_digest(await db.fetch_one("SELECT * FROM users WHERE id = ?", (user["id"],)), force=True)
+        return queued, sent, len(digest_rows), again
+    queued, sent, digest_messages, again = asyncio.run(run())
+    assert queued == 3          # changes were held back
+    assert sent == 3            # one digest covering all three
+    assert digest_messages == 1 # one message (email only: no Telegram/Discord set up)
+    assert again == 0           # nothing new -> nothing sent
