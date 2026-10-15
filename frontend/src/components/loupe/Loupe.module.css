@@ -1,0 +1,75 @@
+.wrap { position: relative; width: 100%; cursor: none; touch-action: pan-y; }
+@media (hover: none) { .wrap { cursor: auto; } }
+.img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.region {
+  position: absolute;
+  border: 2px solid color-mix(in srgb, var(--ruby) 85%, transparent);
+  background: color-mix(in srgb, var(--ruby) 10%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--ruby) 45%, transparent);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.lens {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+  background: #fff;
+  /* Knurled steel bezel is drawn by ::before as an overlay ring, so the lens centre stays exact. */
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 22px 40px -12px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+.lens::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 7px;
+  background: repeating-conic-gradient(#d7dcda 0deg 3deg, #6f7774 3deg 6deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  z-index: 3;
+}
+.layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.regionZoomed {
+  position: absolute;
+  border: 2px solid color-mix(in srgb, var(--ruby) 85%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--ruby) 45%, transparent);
+  border-radius: 6px;
+}
+.vignette {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 58%, rgba(0, 0, 0, 0.28) 100%);
+  z-index: 2;
+}
+.badge, .zoom {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(11, 20, 17, 0.8);
+  color: #ece7dc;
+  font-family: var(--font-text);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge { top: 14px; }
+.zoom { bottom: 12px; }

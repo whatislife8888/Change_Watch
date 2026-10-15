@@ -1,0 +1,104 @@
+/* Diff.module.css — text and visual diff views. JetBrains Mono only here, where alignment matters. */
+.unified, .sbs {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+.line { display: grid; grid-template-columns: 28px minmax(0, 1fr); padding: 2px 14px 2px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sign { color: var(--text-3); text-align: center; user-select: none; }
+.added { background: var(--added-bg); }
+.added .sign { color: var(--lume-ink); }
+.removed { background: var(--removed-bg); }
+.removed .sign { color: var(--ruby-ink); }
+.removed del { text-decoration-color: color-mix(in srgb, var(--ruby) 70%, transparent); color: var(--text-2); }
+.wordIns { background: var(--added-strong); color: var(--text); text-decoration: none; border-radius: 3px; padding: 0 1px; }
+.wordDel { background: var(--removed-strong); color: var(--text); text-decoration: line-through; text-decoration-color: var(--ruby); border-radius: 3px; padding: 0 1px; }
+.pair { border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+.collapse {
+  display: block;
+  width: 100%;
+  min-height: 36px;
+  border: 0;
+  border-top: 1px dashed var(--hairline-strong);
+  border-bottom: 1px dashed var(--hairline-strong);
+  background: var(--surface);
+  color: var(--blued-ink);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.collapse:hover { background: var(--accent-soft); }
+.same { color: var(--text-2); padding: 24px 0; }
+
+.sbsHead, .sbsRow { display: grid; grid-template-columns: 1fr 1fr; }
+.sbsHead { font-family: var(--font-text); font-size: 13px; font-weight: 500; color: var(--text-2); border-bottom: 1px solid var(--hairline-strong); }
+.sbsHead span { padding: 10px 14px; }
+.sbsHead span + span, .cell + .cell { border-left: 1px solid var(--hairline); }
+.cell { padding: 2px 14px; white-space: pre-wrap; overflow-wrap: anywhere; min-width: 0; }
+.empty { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--hairline) 6px 7px); }
+.addedSoft { background: color-mix(in srgb, var(--added-bg) 60%, transparent); }
+.removedSoft { background: color-mix(in srgb, var(--removed-bg) 60%, transparent); }
+.sbs .collapse { grid-column: 1 / -1; }
+@media (max-width: 760px) {
+  .sbs { font-size: 12px; }
+  .cell { padding: 2px 8px; }
+}
+
+/* ---- visual views ---- */
+.shotFrame {
+  position: relative;
+  max-height: 78vh;
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  overscroll-behavior: contain;
+}
+.shotInner { position: relative; width: 100%; }
+.shotImg { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.region {
+  position: absolute;
+  border: 2px solid color-mix(in srgb, var(--ruby) 85%, transparent);
+  background: color-mix(in srgb, var(--ruby) 12%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ruby) 18%, transparent), 0 0 18px color-mix(in srgb, var(--ruby) 45%, transparent);
+  border-radius: 4px;
+  pointer-events: none;
+}
+.note { color: var(--text-2); font-size: var(--fs-14); margin-bottom: 12px; }
+.hint { color: var(--text-2); font-size: 13px; margin-top: 10px; }
+
+.sliderStack { position: relative; width: 100%; }
+.sliderTop { position: absolute; inset: 0; }
+.sliderHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  margin-left: -22px;
+  cursor: ew-resize;
+  display: flex;
+  justify-content: center;
+  touch-action: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+.sliderHandle::before { content: ''; width: 2px; height: 100%; background: var(--blued); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6); }
+.sliderKnob {
+  position: sticky;
+  top: 45%;
+  margin-left: -1px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--blued-deep);
+  border: 2px solid #fff;
+  box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.6);
+  position: absolute;
+}
+.sliderLabels { display: flex; justify-content: space-between; color: var(--text-2); font-size: 13px; margin-bottom: 8px; }
+.overlayControls { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; font-size: var(--fs-14); color: var(--text-2); flex-wrap: wrap; }
+.overlayControls input[type='range'] { width: min(320px, 100%); accent-color: var(--blued); }

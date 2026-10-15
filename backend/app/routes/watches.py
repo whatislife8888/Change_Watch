@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, Query, Response
 
-from .. import db, differ, noise, visual_diff
+from .. import checker, db, differ, visual_diff
 from ..auth import current_user
 from ..config import settings
 from ..errors import ApiError
@@ -254,11 +254,14 @@ async def compare(watch_id: int, a: int, b: int, user: dict = Depends(current_us
     if snap_a["watch_id"] != watch_id or snap_b["watch_id"] != watch_id:
         raise ApiError(400, "wrong_watch", "Both versions must belong to this page.")
     # Re-normalise both with the same rules and the same "today", so both sides are treated alike.
+    # Elements learned as noise after a snapshot was saved are removed by re-extracting its stored HTML
+    # (checker.baseline_lines), exactly as the checker does for its baseline.
     target = await db.fetch_one("SELECT volatile_rules FROM targets WHERE id = ?", (watch["target_id"],))
     rules = db.from_json(target["volatile_rules"] if target else None, [])
-    today = (db.parse_iso(snap_b["created_at"]) or datetime.now(timezone.utc)).date()
-    na = noise.normalise_text(snap_a["raw_text"], watch["sensitivity"], rules, today)
-    nb = noise.normalise_text(snap_b["raw_text"], watch["sensitivity"], rules, today)
+    when = db.parse_iso(snap_b["created_at"]) or datetime.now(timezone.utc)
+    plain_watch = {**watch, "flapping_until": None}
+    na = await checker.baseline_lines(plain_watch, snap_a, rules, when)
+    nb = await checker.baseline_lines(plain_watch, snap_b, rules, when)
     text = differ.diff_lines(na.norm_lines, nb.norm_lines, na.raw_lines, nb.raw_lines)
 
     fa = await db.fetch_one("SELECT * FROM fetches WHERE id = ?", (snap_a["fetch_id"],)) if snap_a["fetch_id"] else None
