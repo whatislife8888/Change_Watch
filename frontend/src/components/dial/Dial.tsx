@@ -111,8 +111,8 @@ function ChapterRing({ size }: { size: number }) {
       <circle r={0.8 * R} strokeWidth={0.5} opacity={0.55} vectorEffect="non-scaling-stroke" />
       <circle r={0.88 * R} strokeWidth={thin * 0.8} opacity={0.6} vectorEffect="non-scaling-stroke" />
       <circle r={0.93 * R} strokeWidth={thin * 0.8} opacity={0.6} vectorEffect="non-scaling-stroke" />
-      {ticks.map((t, i) => (
-        <line key={i} {...t} strokeWidth={t.major ? thin * 2 : thin} opacity={t.major ? 0.95 : 0.6} vectorEffect="non-scaling-stroke" />
+      {ticks.map(({ major, ...line }, i) => (
+        <line key={i} {...line} strokeWidth={major ? thin * 2 : thin} opacity={major ? 0.95 : 0.6} vectorEffect="non-scaling-stroke" />
       ))}
     </g>
   );

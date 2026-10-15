@@ -1,0 +1,19 @@
+/* picker.css — outlines drawn inside the picker iframe. Prefixed ids/classes so they can't clash with the page. */
+#__cw_hover {
+  position: absolute; z-index: 2147483646; pointer-events: none; display: none;
+  border: 2px solid #1D8A5B; border-radius: 3px; box-sizing: border-box;
+  transition: left 80ms ease-out, top 80ms ease-out, width 80ms ease-out, height 80ms ease-out;
+}
+#__cw_label {
+  position: absolute; z-index: 2147483647; pointer-events: none; display: none;
+  max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 3px 8px; border-radius: 4px; color: #fff;
+  font: 500 12px/1.4 ui-monospace, Menlo, monospace;
+}
+#__cw_layer { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 2147483645; pointer-events: none; }
+.__cw_pick { position: absolute; pointer-events: none; box-sizing: border-box; border-radius: 3px; border: 2px solid; }
+.__cw_watch { border-color: #1D8A5B; background: rgba(29, 138, 91, 0.12); }
+.__cw_ignore { border-color: #B8163F; background: repeating-linear-gradient(135deg, rgba(184, 22, 63, 0.16) 0 6px, rgba(184, 22, 63, 0.04) 6px 12px); }
+.__cw_number { border-color: #2340C8; background: rgba(35, 64, 200, 0.12); }
+html { cursor: crosshair !important; }
+a, button, input, select, textarea, label { cursor: crosshair !important; }

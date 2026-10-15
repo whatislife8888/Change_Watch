@@ -19,6 +19,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'));
 const AddPage = lazy(() => import('./pages/AddPage'));
 const PageDetail = lazy(() => import('./pages/PageDetail'));
 const Compare = lazy(() => import('./pages/Compare'));
+const Picker = lazy(() => import('./pages/Picker'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const queryClient = new QueryClient({
@@ -77,6 +78,7 @@ export default function App() {
               <Route path="/pages/new" element={<RequireAuth><AddPage /></RequireAuth>} />
               <Route path="/pages/:id" element={<RequireAuth><PageDetail /></RequireAuth>} />
               <Route path="/pages/:id/compare" element={<RequireAuth><Compare /></RequireAuth>} />
+              <Route path="/pages/:id/picker" element={<RequireAuth><Picker /></RequireAuth>} />
               <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
             </Routes>
           </Suspense>
