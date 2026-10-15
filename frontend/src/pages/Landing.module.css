@@ -45,6 +45,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100svh; /* phones: the height with the browser toolbars showing, so nothing is hidden */
   display: flex;
   flex-direction: column;
   justify-content: center;

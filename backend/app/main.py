@@ -11,6 +11,7 @@ In production FastAPI also serves the built React app (FRONTEND_DIST): real file
 any other non-API GET returns index.html, so client-side routes like /pages/12 work on refresh.
 """
 import logging
+import mimetypes
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -40,6 +41,9 @@ from .routes import stats as stats_routes  # noqa: E402
 from .routes import watches as watch_routes  # noqa: E402
 from .scheduler import Scheduler, reset_stuck_targets  # noqa: E402
 from .security import OriginCheckMiddleware  # noqa: E402
+
+# The web app manifest needs its own content type for browsers to treat the site as installable.
+mimetypes.add_type("application/manifest+json", ".webmanifest")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("changewatch")
@@ -85,7 +89,7 @@ for router in (auth_routes.router, watch_routes.router, stats_routes.router, eve
 FRONTEND = Path(settings.frontend_dist) if settings.frontend_dist else None
 
 
-@app.get("/{full_path:path}", include_in_schema=False)
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"], include_in_schema=False)
 async def spa(full_path: str, request: Request) -> Response:
     """Serve the built frontend: a real file if it exists, otherwise index.html (SPA fallback)."""
     if full_path.startswith(("api/", "rss/")):
@@ -94,7 +98,13 @@ async def spa(full_path: str, request: Request) -> Response:
         raise ApiError(404, "not_found", "Frontend not built. In development open http://localhost:5173.")
     candidate = (FRONTEND / full_path).resolve()
     if full_path and candidate.is_file() and FRONTEND.resolve() in candidate.parents:
-        # Vite puts a content hash in asset file names, so they can be cached forever.
-        cache = "public, max-age=31536000, immutable" if full_path.startswith("assets/") else "public, max-age=3600"
+        # Vite puts a content hash in asset file names, so they can be cached forever. The service worker and
+        # manifest must always be re-checked, or phones would keep running an old version of the app.
+        if full_path.startswith("assets/"):
+            cache = "public, max-age=31536000, immutable"
+        elif full_path in ("sw.js", "manifest.webmanifest", "asset-manifest.json"):
+            cache = "no-cache"
+        else:
+            cache = "public, max-age=3600"
         return FileResponse(candidate, headers={"Cache-Control": cache})
     return FileResponse(FRONTEND / "index.html", headers={"Cache-Control": "no-cache"})

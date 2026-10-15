@@ -7,8 +7,12 @@
  *
  * Messages
  *   parent -> frame: {type:'mode', mode}  {type:'highlight', selectors:{watch:[], ignore:[], number:[]}}
+ *   parent -> frame (touch screens): {type:'parent'}  {type:'confirm'}  {type:'cancel'}
  *   frame -> parent: {type:'ready'}  {type:'hover', selector}  {type:'pick', selector, textPreview, mode}
+ *                    {type:'candidate', selector, textPreview, atTop}   (touch: a tapped element waiting for confirmation)
  * Keys: ArrowUp selects the parent element, Enter picks, Esc cancels.
+ * Touch: there is no hover and no arrow key, so a tap only SELECTS an element (a candidate); the parent page
+ * shows "Select parent / Add / Cancel" buttons that send the messages above.
  *
  * The iframe has sandbox="allow-scripts" WITHOUT allow-same-origin, so this script (and anything else in
  * the page) runs in an opaque origin: it cannot read our cookies or touch the parent page's DOM.
@@ -16,6 +20,7 @@
 (function () {
   var mode = 'watch';
   var current = null;
+  var lastPointer = 'mouse';
   var picked = { watch: [], ignore: [], number: [] };
   var COLORS = { watch: '#1D8A5B', ignore: '#B8163F', number: '#2340C8' };
 
@@ -137,10 +142,18 @@
     current = e.target;
     showHover(current);
   }, true);
+  document.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType || 'mouse'; }, true);
   document.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
     if (isOurs(e.target)) return;
+    if (lastPointer === 'touch' || lastPointer === 'pen') {
+      // Touch: select a candidate; the parent page confirms it (or widens it to the parent element).
+      current = e.target;
+      showHover(current);
+      sendCandidate();
+      return;
+    }
     pick(current || e.target);
   }, true);
   document.addEventListener('submit', function (e) { e.preventDefault(); }, true);
@@ -159,6 +172,15 @@
   }, true);
   window.addEventListener('resize', redraw);
 
+  function sendCandidate() {
+    if (!current) { parent.postMessage({ type: 'candidate', selector: null }, '*'); return; }
+    var text = (current.innerText || current.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 160);
+    // atTop: the element's parent is <body>, so widening further would just mean "the whole page".
+    var up = current.parentElement;
+    var atTop = !up || up === document.body || up === document.documentElement;
+    parent.postMessage({ type: 'candidate', selector: selectorFor(current), textPreview: text, atTop: atTop }, '*');
+  }
+
   function pick(el) {
     if (!el) return;
     var sel = selectorFor(el);
@@ -171,6 +193,14 @@
     var data = e.data || {};
     if (data.type === 'mode' && COLORS[data.mode]) { mode = data.mode; if (current) showHover(current); }
     if (data.type === 'highlight' && data.selectors) { picked = data.selectors; redraw(); }
+    if (data.type === 'parent' && current && current.parentElement && current.parentElement !== document.body
+        && current.parentElement !== document.documentElement) {
+      current = current.parentElement;
+      showHover(current);
+      sendCandidate();
+    }
+    if (data.type === 'confirm' && current) { pick(current); current = null; showHover(null); sendCandidate(); }
+    if (data.type === 'cancel') { current = null; showHover(null); sendCandidate(); }
   });
 
   window.addEventListener('load', redraw);

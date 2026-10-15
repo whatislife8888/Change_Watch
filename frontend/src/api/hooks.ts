@@ -31,6 +31,17 @@ export const keys = {
 
 // ---------- auth ----------
 
+/**
+ * Forget every cached query EXCEPT "who am I", then set it.
+ * Why not queryClient.clear(): that also deletes the "me" query object, and components that stay mounted
+ * across login/logout (the bottom tab bar, the live-events connection) would keep listening to the deleted
+ * object and never learn that the user changed.
+ */
+function resetForUser(qc: ReturnType<typeof useQueryClient>, user: User | null) {
+  qc.removeQueries({ predicate: (q) => q.queryKey[0] !== 'me' });
+  qc.setQueryData(keys.me, user);
+}
+
 /** The logged-in user, or null when logged out. Never redirects. */
 export function useMe() {
   return useQuery<User | null>({
@@ -45,6 +56,9 @@ export function useMe() {
     },
     staleTime: 5 * 60_000,
     retry: false,
+    // Always actually try the request (never "pause" it while the browser thinks it's offline), so the
+    // app can tell "offline" (network error) apart from "logged out" (401) and recover by itself.
+    networkMode: 'always',
   });
 }
 
@@ -52,10 +66,7 @@ export function useLogin() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: { email: string; password: string }) => api<User>('/api/auth/login', { method: 'POST', body }),
-    onSuccess: (user) => {
-      qc.clear();
-      qc.setQueryData(keys.me, user);
-    },
+    onSuccess: (user) => resetForUser(qc, user),
   });
 }
 
@@ -64,10 +75,7 @@ export function useSignup() {
   return useMutation({
     mutationFn: (body: { email: string; password: string; display_name: string }) =>
       api<User>('/api/auth/signup', { method: 'POST', body }),
-    onSuccess: (user) => {
-      qc.clear();
-      qc.setQueryData(keys.me, user);
-    },
+    onSuccess: (user) => resetForUser(qc, user),
   });
 }
 
@@ -75,10 +83,7 @@ export function useLogout() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: () => api<{ ok: boolean }>('/api/auth/logout', { method: 'POST' }),
-    onSuccess: () => {
-      qc.clear();
-      qc.setQueryData(keys.me, null);
-    },
+    onSuccess: () => resetForUser(qc, null),
   });
 }
 

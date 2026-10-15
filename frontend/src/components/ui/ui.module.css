@@ -341,3 +341,14 @@
 .chip:hover { color: var(--text); border-color: var(--text-3); }
 .chip[aria-pressed='true'] { color: var(--text); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
 .chipCount { font-variant-numeric: tabular-nums lining-nums; color: var(--text-2); }
+
+/* ---------- Touch screens ---------- */
+@media (pointer: coarse) {
+  /* Fingers need at least 44px; mouse-sized 36px controls grow on touch screens. */
+  .small, .chip, .segment, .menuItem { min-height: 44px; }
+  .small.iconOnly { width: 44px; }
+}
+@media (hover: none) {
+  /* No hover on touch screens: don't leave the sheen or hover tints stuck after a tap. */
+  .btn:hover:not(:disabled)::after { transform: translateX(-110%); transition: none; }
+}

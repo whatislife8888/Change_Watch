@@ -16,6 +16,7 @@ import { keys, useWatch } from '../api/hooks';
 import type { WatchDetail } from '../api/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { PageShell } from '../components/layout/PageShell';
+import { useMedia } from '../lib/useMedia';
 import { Button } from '../components/ui/Button';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Skeleton } from '../components/ui/misc';
@@ -48,6 +49,9 @@ export default function Picker() {
   const [testing, setTesting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadedFrom, setLoadedFrom] = useState<number | null>(null);
+  // Touch screens: a tapped element waits here until the user confirms it (or widens it to its parent).
+  const [candidate, setCandidate] = useState<{ selector: string; text: string; atTop: boolean } | null>(null);
+  const touch = useMedia('(pointer: coarse)');
 
   // Start with the watch's saved selections.
   useEffect(() => {
@@ -75,8 +79,12 @@ export default function Picker() {
   useEffect(() => {
     function onMessage(e: MessageEvent) {
       if (!frameRef.current || e.source !== frameRef.current.contentWindow) return; // only our iframe
-      const data = e.data as { type?: string; selector?: string; textPreview?: string; mode?: Mode };
+      const data = e.data as { type?: string; selector?: string | null; textPreview?: string; mode?: Mode; atTop?: boolean };
       if (data.type === 'ready') setReady(true);
+      if (data.type === 'candidate') {
+        setCandidate(data.selector ? { selector: data.selector, text: data.textPreview ?? '', atTop: !!data.atTop } : null);
+        if (data.selector) setHovered(data.selector);
+      }
       if (data.type === 'hover' && typeof data.selector === 'string') setHovered(data.selector);
       if (data.type === 'pick' && typeof data.selector === 'string' && data.selector) {
         const sel = data.selector;
@@ -180,9 +188,28 @@ export default function Picker() {
                 sandbox="allow-scripts" referrerPolicy="no-referrer" />
             ) : <Skeleton height="100%" />}
           </div>
+          {candidate && (
+            <div className={s.candidate} role="group" aria-label="Selected element">
+              <div className={s.candidateText}>
+                <code>{candidate.selector}</code>
+                {candidate.text && <span>{candidate.text}</span>}
+                {candidate.atTop && <span>This is already the largest region on the page.</span>}
+              </div>
+              <div className={s.candidateActions}>
+                <Button size="sm" variant="secondary" disabled={candidate.atTop} onClick={() => post({ type: 'parent' })}
+                  title={candidate.atTop ? 'This is already the largest region; anything bigger is the whole page.' : undefined}>
+                  Select parent
+                </Button>
+                <Button size="sm" variant="primary" onClick={() => post({ type: 'confirm' })}>
+                  {mode === 'watch' ? 'Add to Watching' : mode === 'ignore' ? 'Add to Ignoring' : 'Use as number'}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => post({ type: 'cancel' })}>Cancel</Button>
+              </div>
+            </div>
+          )}
           <p className={s.hint}>
-            <span className="mono">{hovered || 'Hover an element to see its selector.'}</span>
-            <span>Arrow up selects the parent element. Enter picks. Esc cancels.</span>
+            <span className="mono">{hovered || (touch ? 'Tap an element to select it.' : 'Hover an element to see its selector.')}</span>
+            <span>{touch ? 'Tap an element, then use Select parent to widen it.' : 'Arrow up selects the parent element. Enter picks. Esc cancels.'}</span>
           </p>
         </div>
 

@@ -42,6 +42,10 @@ is CSS Modules plus design tokens (CSS variables), with no component library.
 | `components/forms/WatchFields.tsx` | Interval, sensitivity and keyword controls shared by Add page and Settings |
 | `components/layout/*` | Top bar (collapses to a menu on phones), theme and sound toggles, page shell, footer |
 | `components/ui/*` | Button (crown-shaped primary with one sheen sweep), Input, Select, SegmentedControl (radiogroup, roving tabindex, sliding thumb), Tabs, Modal (focus handling), Menu (keyboard), Skeleton, EmptyState, StatusText (jewel + word), Tooltip, Chip |
+| `components/layout/BottomNav.tsx` | Phone tab bar (Pages, Activity, Add, Settings): icon + word, above the home indicator, only on phone widths for logged-in users |
+| `components/layout/Offline.tsx` | `OfflineScreen` (shown instead of logging you out when the server can't be reached; retries every 4 s) and `OfflineBanner`; `useOnline()` |
+| `lib/install.ts`, `lib/useMedia.ts` | Service worker registration (production only), the "Install app" prompt (`beforeinstallprompt`), iOS detection, standalone detection; a media-query hook (`PHONE`) |
+| `public/manifest.webmanifest`, `public/sw.js`, `public/icons/*` | Installable-app metadata and icons; the service worker (network-first pages, cache-first hashed assets, precache from `asset-manifest.json`, never touches `/api`) |
 | `pages/*` | Landing, Login, Signup, Dashboard, AddPage, PageDetail (+ `detail/` tabs), Compare, Picker, Activity, Settings, System, ImportTemplate, NotFound |
 
 ## How the signature animations work
@@ -107,3 +111,22 @@ each step label: Render, Filter, Compare, Alert.
 ### Shared-element transition
 Dashboard dials and the detail page's large dial share `layoutId="dial-{id}"`, so Motion animates the
 dial growing into the detail page.
+
+### The phone web app (PWA)
+- **Manifest.** `manifest.webmanifest` tells the phone the app's name, icons, colours and that it
+  should open `standalone` (full screen, no browser bar). The iPhone reads the `apple-*` meta tags in
+  `index.html` instead.
+- **Service worker** (`public/sw.js`). This is a script the browser runs between the app and the
+  network. Page loads try the network first, so you always get the latest deploy, and fall back to the
+  cached `index.html` when offline. Files under `/assets/` have a content hash in their names, so they
+  are safe to serve from cache forever. A tiny Vite plugin (`vite.config.ts → assetManifest`) lists
+  every built file so the worker can cache them all, and old builds' files are deleted. `/api` is never
+  cached, so data is always live.
+- **Offline vs logged out.** `App.tsx → useAuthState()` returns `offline` when the "who am I" request
+  fails with a network error. That's different from a 401 (logged out), so the app shows
+  `OfflineScreen` instead of the login page.
+- **Safe areas.** `viewport-fit=cover` plus `env(safe-area-inset-*)` padding keep content clear of the
+  notch and the home indicator.
+- **Touch picker.** In `picker.js`, a touch tap sends `{type:'candidate'}` instead of picking. The
+  parent page shows *Select parent / Add / Cancel*, which send `parent`, `confirm` or `cancel` back.
+  `atTop` disables *Select parent* when the next step up would be the whole page.

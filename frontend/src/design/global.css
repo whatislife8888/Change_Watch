@@ -18,6 +18,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh; /* phones: the visible height, excluding the browser's own toolbars */
   font-family: var(--font-text);
   font-size: var(--fs-16);
   line-height: 1.55;
@@ -79,8 +80,18 @@ img, svg { display: block; }
   width: 100%;
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  /* In landscape on notched phones, keep content clear of the notch. */
+  padding: 0 max(var(--gutter), env(safe-area-inset-right)) 0 max(var(--gutter), env(safe-area-inset-left));
 }
+
+/* ---------- Touch screens (phones and tablets) ---------- */
+html { -webkit-tap-highlight-color: transparent; }
+button, a, [role='button'], [role='tab'], [role='radio'] { touch-action: manipulation; }
+@media (pointer: coarse) {
+  /* iPhone Safari zooms into any field with text smaller than 16px; keep every field at 16px. */
+  input, select, textarea { font-size: 16px !important; }
+}
+/* Bigger touch targets for small buttons, chips and segments live in components/ui/ui.module.css. */
 
 .visually-hidden {
   position: absolute !important;

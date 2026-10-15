@@ -263,6 +263,17 @@ Prefer stable over short: a non-random unique id → a unique stable attribute (
 `aria-label`, `name`...) → a `tag.class` path upward using only stable-looking classes, adding
 `:nth-of-type` only when needed and stopping as soon as the selector is unique (max depth 6).
 
+**55a. Does it work on phones?**
+Yes, as an installable web app (PWA): a manifest and icons, a service worker that keeps the app's code
+for offline launch, a bottom tab bar, safe-area padding for notches, 44 px touch targets, and touch
+versions of the picker (tap, select parent, add), the loupe (press and hold) and the slider. I tested
+it in an emulated iPhone against the production build.
+
+**55b. Why a PWA instead of a native app?**
+One codebase, nothing to approve in an app store, and updates the moment we deploy. The heavy work
+(Chrome, the scheduler) runs on the server anyway, so the phone only needs a screen. The service worker
+never caches `/api`, so data is always live.
+
 ## Testing
 
 **56. What did you test?**

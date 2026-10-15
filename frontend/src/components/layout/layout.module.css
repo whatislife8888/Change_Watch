@@ -4,6 +4,8 @@
   position: sticky;
   top: 0;
   z-index: 40;
+  /* Clear the iPhone notch / status bar when the app runs full-screen from the home screen. */
+  padding-top: env(safe-area-inset-top);
   border-bottom: 1px solid var(--hairline);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   backdrop-filter: saturate(1.2) blur(10px);
@@ -84,14 +86,10 @@
   border-radius: 50%;
   background: transparent;
 }
-.mobileMenu { display: none; }
-
 @media (max-width: 760px) {
-  .nav { display: none; }
-  .mobileMenu { display: inline-flex; }
-  .addLabel { display: none; }
-  .barInner { gap: 8px; }
-  .hideMobile { display: none; }
+  .barInner { gap: 8px; height: 60px; }
+  /* Leave room for the fixed bottom tab bar (and the home indicator under it). */
+  .main { padding-bottom: calc(120px + env(safe-area-inset-bottom)); padding-top: 28px; }
 }
 
 .main { flex: 1; padding: 40px 0 96px; }

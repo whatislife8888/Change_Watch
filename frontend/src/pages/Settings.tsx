@@ -13,6 +13,7 @@ import { Input, Switch } from '../components/ui/Input';
 import { Skeleton, StatusText } from '../components/ui/misc';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { Select } from '../components/ui/Select';
+import { isIOS, isStandalone, promptInstall, useCanInstall } from '../lib/install';
 import { unlockAudio } from '../lib/sound';
 import { usePrefs, type Theme } from '../lib/theme';
 import s from './Settings.module.css';
@@ -160,6 +161,8 @@ function Form({ data }: { data: UserSettings }) {
         )}
       </Section>
 
+      <InstallSection />
+
       <Section title="Appearance">
         <div className={s.row}>
           <SegmentedControl<Theme> label="Theme" value={theme} onChange={setTheme}
@@ -169,6 +172,32 @@ function Form({ data }: { data: UserSettings }) {
           checked={sound} onChange={(e) => { unlockAudio(); setSound(e.target.checked); }} />
       </Section>
     </>
+  );
+}
+
+/** "Use it like an app": install button (Android/desktop) or Add to Home Screen steps (iPhone). */
+function InstallSection() {
+  const canInstall = useCanInstall();
+  if (isStandalone()) {
+    return <Section title="App"><p className="muted">ChangeWatch is installed on this device and running as an app.</p></Section>;
+  }
+  return (
+    <Section title="App">
+      <p className="muted">Put ChangeWatch on your home screen. It opens full screen like any other app.</p>
+      {canInstall ? (
+        <div>
+          <Button variant="primary" onClick={() => void promptInstall().then((ok) => ok && toast('ChangeWatch installed.'))}>Install ChangeWatch</Button>
+        </div>
+      ) : isIOS() ? (
+        <ol className={s.steps}>
+          <li>Open this page in Safari.</li>
+          <li>Tap the Share button, then Add to Home Screen.</li>
+          <li>Tap Add. ChangeWatch appears with its dial icon.</li>
+        </ol>
+      ) : (
+        <p className="small muted">Use your browser's menu: Install app, or Add to Home screen.</p>
+      )}
+    </Section>
   );
 }
 

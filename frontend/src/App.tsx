@@ -10,7 +10,11 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { useMe } from './api/hooks';
+import { ApiError } from './api/client';
+import { BottomNav } from './components/layout/BottomNav';
+import { OfflineBanner, OfflineScreen } from './components/layout/Offline';
 import { PrefsProvider, usePrefs } from './lib/theme';
+import { PHONE, useMedia } from './lib/useMedia';
 import { useEvents } from './realtime/useEvents';
 
 const Landing = lazy(() => import('./pages/Landing'));
@@ -33,28 +37,42 @@ const queryClient = new QueryClient({
   },
 });
 
+/**
+ * Who is using the app right now? 'offline' means we couldn't reach the server to find out — that is
+ * NOT the same as logged out, so we must not send the user to the login page.
+ */
+function useAuthState(): 'loading' | 'in' | 'out' | 'offline' {
+  const { data: user, isPending, fetchStatus, error } = useMe();
+  if (user) return 'in';
+  if (error instanceof ApiError && error.code === 'network') return 'offline';
+  if (isPending && fetchStatus === 'paused') return 'offline'; // the browser says there's no network
+  if (isPending) return 'loading';
+  return 'out';
+}
+
 /** Shows children only to logged-in users. */
 function RequireAuth({ children }: { children: ReactNode }) {
-  const { data: user, isLoading } = useMe();
+  const state = useAuthState();
   const location = useLocation();
-  if (isLoading) return null;
-  if (!user) return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  if (state === 'loading') return null;
+  if (state === 'offline') return <OfflineScreen />;
+  if (state === 'out') return <Navigate to={`/login?next=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   return <>{children}</>;
 }
 
 /** "/" — dashboard when logged in, landing page otherwise. */
 function Home() {
-  const { data: user, isLoading } = useMe();
-  if (isLoading) return null;
-  if (!user) return <Landing />;
-  return <Dashboard />;
+  const state = useAuthState();
+  if (state === 'loading') return null;
+  if (state === 'offline') return <OfflineScreen />;
+  return state === 'in' ? <Dashboard /> : <Landing />;
 }
 
 /** Logged-in users visiting /login or /signup go straight home. */
 function GuestOnly({ children }: { children: ReactNode }) {
-  const { data: user, isLoading } = useMe();
-  if (isLoading) return null;
-  if (user) return <Navigate to="/" replace />;
+  const state = useAuthState();
+  if (state === 'loading') return null;
+  if (state === 'in') return <Navigate to="/" replace />;
   return <>{children}</>;
 }
 
@@ -67,7 +85,18 @@ function LiveEvents() {
 
 function ThemedToaster() {
   const { theme } = usePrefs();
-  return <Toaster theme={theme === 'opaline' ? 'light' : 'dark'} position="bottom-right" closeButton={false} visibleToasts={4} gap={10} />;
+  const phone = useMedia(PHONE);
+  // On phones toasts drop from the top, so they never cover the bottom tab bar or the thumb.
+  return (
+    <Toaster
+      theme={theme === 'opaline' ? 'light' : 'dark'}
+      position={phone ? 'top-center' : 'bottom-right'}
+      mobileOffset={{ top: 'calc(env(safe-area-inset-top) + 68px)' }}
+      closeButton={false}
+      visibleToasts={phone ? 2 : 4}
+      gap={10}
+    />
+  );
 }
 
 export default function App() {
@@ -91,6 +120,8 @@ export default function App() {
               <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
             </Routes>
           </Suspense>
+          <BottomNav />
+          <OfflineBanner />
           <LiveEvents />
           <ThemedToaster />
         </BrowserRouter>

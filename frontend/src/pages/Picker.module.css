@@ -22,6 +22,21 @@
 .mode_ignore { border-color: color-mix(in srgb, var(--ruby) 70%, transparent); }
 .mode_number { border-color: color-mix(in srgb, var(--blued) 70%, transparent); }
 .frame { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+.candidate {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--surface-raised);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: var(--shadow-raised);
+}
+.candidateText { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.candidateText code { font-family: var(--font-mono); font-size: 13px; overflow-wrap: anywhere; }
+.candidateText span { font-size: 13px; color: var(--text-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.candidateActions { display: flex; gap: 8px; flex-wrap: wrap; }
 .hint { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--text-2); }
 .hint .mono { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; }
 
@@ -76,5 +91,5 @@
 @media (max-width: 980px) {
   .layout { grid-template-columns: 1fr; }
   .panel { position: static; }
-  .frameWrap { height: 60vh; }
+  .frameWrap { height: 60vh; height: 60svh; }
 }

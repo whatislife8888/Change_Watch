@@ -71,7 +71,7 @@
 .note { color: var(--text-2); font-size: var(--fs-14); margin-bottom: 12px; }
 .hint { color: var(--text-2); font-size: 13px; margin-top: 10px; }
 
-.sliderStack { position: relative; width: 100%; }
+.sliderStack { position: relative; width: 100%; touch-action: pan-y; /* vertical swipes scroll; horizontal drags move the divider */ }
 .sliderTop { position: absolute; inset: 0; }
 .sliderHandle {
   position: absolute;

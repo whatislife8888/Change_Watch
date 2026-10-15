@@ -117,6 +117,29 @@ and `VITE_API_BASE`.
 - **Extras:** shared setups (`/import/{token}`), the "fetched once for everyone" message, the `/system`
   admin view, a live Movement (gear train driven by the queue), sounds, two themes.
 
+## On phones: an installable web app
+
+ChangeWatch is a Progressive Web App, so it can be installed on a phone's home screen and opens full
+screen like a native app.
+
+- **Install:** on Android (Chrome) or desktop, use the **Install ChangeWatch** button in Settings → App
+  (or the browser menu). On iPhone or iPad, open it in Safari, then tap **Share → Add to Home Screen**.
+  `manifest.webmanifest` provides the name, the dial icons (including a maskable one) and the
+  "Add page" / "Activity" shortcuts.
+- **Phone layout:** a bottom tab bar (Pages, Activity, Add, Settings) within thumb reach, safe-area
+  padding for notches and the home indicator, and 44 px touch targets. Fields are 16 px, so iPhone
+  doesn't zoom when you tap them, and toasts appear at the top, clear of the tab bar.
+- **Touch-first interactions:** the region picker uses tap to select, then *Select parent*, then *Add*;
+  the screenshot loupe uses press-and-hold to see the older version; the compare slider drags while
+  vertical swipes still scroll; times show on tap.
+- **Offline:** a service worker (`public/sw.js`) keeps every screen's code on the phone (the build
+  lists all files in `asset-manifest.json`). The app opens without a connection, shows "You're offline"
+  instead of logging you out, and recovers by itself on reconnect. Live data, the event stream and
+  screenshots always come from the server; nothing private is cached.
+- **Verified** in an emulated iPhone 13 against the production build: install metadata, service worker
+  control, sign-up, adding a page from the tab bar, picking a region by touch, an offline relaunch and
+  automatic recovery, and no horizontal scroll at 360 px or 390 px.
+
 ## Design: haute horlogerie for the web
 
 Two themes (Fumé and Opaline), Zodiak + Switzer + JetBrains Mono, and textures in pure CSS/SVG. Each

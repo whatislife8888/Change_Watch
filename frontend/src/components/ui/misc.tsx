@@ -45,7 +45,7 @@ export function StatusText({ status, children }: { status: StatusKind; children?
   );
 }
 
-/** Shows `tip` above its child on hover and keyboard focus. */
+/** Shows `tip` above its child on hover and keyboard focus; on touch screens (no hover) a tap toggles it. */
 export function Tooltip({ tip, children }: { tip: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const id = useId();
@@ -57,6 +57,7 @@ export function Tooltip({ tip, children }: { tip: ReactNode; children: ReactNode
       onMouseLeave={() => setOpen(false)}
       onFocus={() => setOpen(true)}
       onBlur={() => setOpen(false)}
+      onPointerUp={(e) => { if (e.pointerType === 'touch') setOpen((o) => !o); }}
       aria-describedby={open ? id : undefined}
     >
       {children}
