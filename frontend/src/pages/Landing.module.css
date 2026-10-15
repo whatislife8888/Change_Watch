@@ -1,0 +1,113 @@
+.page { display: flex; flex-direction: column; min-height: 100vh; }
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 56px;
+  padding-bottom: 96px;
+  gap: 24px;
+}
+.heroDial { width: min(560px, 86vw); display: flex; justify-content: center; margin-bottom: 16px; }
+.heroDial > * { width: 100% !important; }
+.headline {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--fs-84);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  max-width: 14ch;
+}
+.lede { font-size: var(--fs-21); line-height: 1.5; color: var(--text-2); max-width: 46ch; }
+.form { display: flex; gap: 12px; width: min(620px, 100%); margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+.input {
+  flex: 1 1 300px;
+  min-height: 52px;
+  padding: 0 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-size: var(--fs-16);
+}
+.input::placeholder { color: var(--text-3); }
+.input:focus-visible { border-color: var(--blued); box-shadow: var(--focus-ring); border-radius: var(--radius-pill); }
+.form > button { min-height: 52px; padding: 0 26px; }
+.note { color: var(--text-2); font-size: var(--fs-14); min-height: 1.5em; }
+.note strong { color: var(--text); font-weight: 500; }
+
+.sectionTitle { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-44); line-height: 1.1; }
+
+/* The scroll scene: a tall section with a sticky viewport inside it. */
+.pipeline { position: relative; height: 320vh; border-top: 1px solid var(--hairline); }
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  overflow: hidden;
+  padding-top: 72px;
+}
+.pipelineGrid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+.stage { perspective: 1400px; perspective-origin: 50% 10%; display: flex; justify-content: center; padding-top: 40px; }
+.stack {
+  position: relative;
+  width: min(380px, 70vw);
+  aspect-ratio: 1;
+  transform-style: preserve-3d;
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+}
+.layerSvg { width: 100%; height: 100%; overflow: visible; }
+.plate { fill: var(--dial-face-2); stroke: var(--rhodium); stroke-width: 2.5; }
+.textBar { fill: var(--text-3); opacity: 0.45; }
+.layer:nth-child(2) .layerSvg, .layer:nth-child(3) .layerSvg, .layer:nth-child(4) .layerSvg { filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35)); }
+
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 22px; }
+.step { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 16px; align-items: start; }
+.stepNum {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--hairline-strong);
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--text);
+}
+.stepTitle { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-24); margin-bottom: 4px; }
+.stepBody { color: var(--text-2); font-size: var(--fs-16); max-width: 46ch; }
+
+.questions { padding-top: 96px; padding-bottom: 112px; display: flex; flex-direction: column; gap: 40px; }
+.qaGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 64px; }
+.qa { display: flex; flex-direction: column; gap: 10px; padding-top: 20px; border-top: 1px solid var(--hairline); }
+.q { font-family: var(--font-display); font-weight: 400; font-size: var(--fs-24); line-height: 1.25; }
+.a { color: var(--text-2); }
+
+@media (max-width: 860px) {
+  .headline { font-size: var(--fs-44); }
+  .lede { font-size: var(--fs-18); }
+  .sectionTitle { font-size: var(--fs-32); }
+  .pipeline { height: 260vh; }
+  .sticky { justify-content: flex-start; padding-top: 88px; gap: 12px; }
+  .pipelineGrid { grid-template-columns: 1fr; gap: 8px; }
+  .stack { width: min(220px, 56vw); }
+  .steps { gap: 10px; }
+  .stepTitle { font-size: var(--fs-18); }
+  .stepBody { font-size: var(--fs-14); }
+  .qaGrid { grid-template-columns: 1fr; gap: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipeline { height: auto; }
+  .sticky { position: static; height: auto; padding: 96px 0; }
+}

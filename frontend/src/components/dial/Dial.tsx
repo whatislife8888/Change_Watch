@@ -156,6 +156,7 @@ function DialImpl(props: DialProps) {
 
   // Decide how the engraving should appear: on first mount (if asked) and again whenever engraveKey changes.
   const firstKey = useRef(engraveKey);
+  const firstSeed = useRef(seed);
   const [halo, setHalo] = useState(false);
   const changed = engraveKey !== firstKey.current;
   useEffect(() => {
@@ -209,8 +210,10 @@ function DialImpl(props: DialProps) {
               </clipPath>
             </defs>
             {crossfade ? (
-              <g key={seed} className={s.crossfade}>
-                <Guilloche seed={seed} detail={detail} animate="none" clipId={`clip-${uid}`} strokeWidth={strokeWidth} />
+              // The first pattern may engrave in; every later seed (the user typing) cross-fades instead.
+              <g key={seed} className={seed === firstSeed.current ? undefined : s.crossfade}>
+                <Guilloche seed={seed} detail={detail} animate={seed === firstSeed.current && engrave && !reduced ? (detail === 'sm' ? 'reveal' : 'engrave') : 'none'}
+                  clipId={`clip-${uid}`} strokeWidth={strokeWidth} />
               </g>
             ) : (
               <Guilloche key={String(engraveKey ?? 'k')} seed={seed} detail={detail} animate={animate} clipId={`clip-${uid}`} strokeWidth={strokeWidth} />

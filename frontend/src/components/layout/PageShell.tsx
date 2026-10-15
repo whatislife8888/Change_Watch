@@ -18,14 +18,16 @@ export function PageShell({ children, flush = false }: { children: ReactNode; fl
   );
 }
 
-/** Site footer (used on the landing page). */
+const GITHUB_URL = (import.meta.env.VITE_GITHUB_URL as string | undefined) || '';
+
+/** Site footer (used on the landing page). The GitHub link appears only when VITE_GITHUB_URL is set. */
 export function Footer() {
   return (
     <footer className={s.footer}>
       <div className={`container ${s.footerInner}`}>
         <span style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--text)' }}>ChangeWatch</span>
         <span>Made by Kushagra Singhal</span>
-        <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+        {GITHUB_URL && <a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>}
         <a href="/bot">About our crawler</a>
       </div>
     </footer>

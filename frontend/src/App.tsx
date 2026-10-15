@@ -13,6 +13,7 @@ import { useMe } from './api/hooks';
 import { PrefsProvider, usePrefs } from './lib/theme';
 import { useEvents } from './realtime/useEvents';
 
+const Landing = lazy(() => import('./pages/Landing'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
@@ -45,7 +46,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
 function Home() {
   const { data: user, isLoading } = useMe();
   if (isLoading) return null;
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Landing />;
   return <Dashboard />;
 }
 
