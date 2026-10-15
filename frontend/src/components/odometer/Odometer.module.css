@@ -1,0 +1,26 @@
+.odometer {
+  display: inline-flex;
+  align-items: baseline;
+  font-variant-numeric: tabular-nums lining-nums;
+  line-height: 1;
+}
+.window {
+  display: inline-block;
+  height: 1em;
+  overflow: hidden;
+  line-height: 1;
+  vertical-align: baseline;
+}
+.strip {
+  display: flex;
+  flex-direction: column;
+  /* A slightly overshooting curve gives the roll a mechanical, spring-loaded feel. */
+  transition: transform 640ms cubic-bezier(.34, 1.36, .64, 1);
+  will-change: transform;
+}
+.cell { display: block; height: 1em; line-height: 1; text-align: center; }
+.static { display: inline-block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .strip { transition: none; }
+}

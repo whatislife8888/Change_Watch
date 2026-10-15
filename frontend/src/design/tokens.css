@@ -1,0 +1,182 @@
+/*
+ * tokens.css — every colour, font, size, radius, shadow and timing used by the app, as CSS variables.
+ *
+ * Fumé (dark) is the default on :root. Opaline (light) overrides the same names on [data-theme="opaline"].
+ * Components only ever use these semantic names (--text, --accent, --lume...), so switching theme is
+ * just flipping one attribute on <html>.
+ *
+ * Why "-ink" variants: the spec's status colours look right as jewels and graphics (which only need 3:1
+ * contrast), but some are too light to read as small text on Opaline. The -ink versions are darker
+ * shades of the same hue that pass WCAG AA (4.5:1) — see docs/04-design-system.md.
+ */
+
+@font-face { font-family: 'Zodiak'; src: url('../assets/fonts/zodiak-300.woff2') format('woff2'); font-weight: 300; font-display: swap; }
+@font-face { font-family: 'Zodiak'; src: url('../assets/fonts/zodiak-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Switzer'; src: url('../assets/fonts/switzer-400.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Switzer'; src: url('../assets/fonts/switzer-500.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Switzer'; src: url('../assets/fonts/switzer-600.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+
+:root {
+  color-scheme: dark;
+
+  /* ---- Fumé raw palette ---- */
+  --fume-center: #17392F;
+  --fume-edge: #060A09;
+
+  /* ---- Semantic colours (Fumé) ---- */
+  --bg: #0B1411;
+  --bg-gradient: radial-gradient(120% 90% at 50% 0%, var(--fume-center) 0%, #0C1A16 45%, var(--fume-edge) 100%);
+  --surface: #0E1714;
+  --surface-raised: #13201C;
+  --surface-sunken: #09110E;
+  --text: #ECE7DC;          /* opaline */
+  --text-2: #A9B2AE;        /* rhodium */
+  --text-3: #7E8884;        /* tertiary, used only for large or decorative text */
+  --hairline: rgba(236, 231, 220, 0.10);
+  --hairline-strong: rgba(236, 231, 220, 0.18);
+
+  --accent: #EFA98C;        /* salmon gold: primary actions */
+  --accent-ink: #0B1411;    /* text on accent */
+  --accent-soft: rgba(239, 169, 140, 0.12);
+  --engrave: #EFA98C;       /* guilloché engraving colour */
+  --salmon: #EFA98C;
+  --salmon-ink: #EFA98C;
+
+  --blued: #5B78F6;
+  --blued-deep: #2440C2;
+  --blued-ink: #8A9EFA;     /* link text: lighter so it passes AA on raised surfaces */
+  --lume: #BFF7D8;
+  --lume-ink: #BFF7D8;
+  --lume-glow: rgba(191, 247, 216, 0.45);
+  --ruby: #F0607F;
+  --ruby-ink: #F48BA2;
+  --ruby-jewel: #B3123E;
+  --topaz: #F4B860;
+  --topaz-ink: #F4B860;
+  --moonstone: #9FB4C7;
+  --moonstone-ink: #9FB4C7;
+  --rhodium: #A9B2AE;
+
+  --added-bg: rgba(191, 247, 216, 0.10);
+  --added-strong: rgba(191, 247, 216, 0.26);
+  --removed-bg: rgba(240, 96, 127, 0.10);
+  --removed-strong: rgba(240, 96, 127, 0.28);
+
+  /* Dial materials */
+  --dial-face-1: #1B4236;
+  --dial-face-2: #10271F;
+  --dial-face-3: #07110E;
+  --dial-ray: rgba(236, 231, 220, 0.035);
+  --dial-ring: rgba(236, 231, 220, 0.55);
+  --dial-tick: rgba(236, 231, 220, 0.62);
+  --case-metal: conic-gradient(from 210deg, #4d5652, #c9d0cc, #5d6662, #e4e8e5, #49524e, #b7bfbb, #4d5652);
+  --date-window-bg: #ECE7DC;
+  --date-window-ink: #141917;
+  --plate-base: #8E9693;
+  --plate-band: rgba(255, 255, 255, 0.16);
+  --gear: #D9A17F;
+  --gear-shade: #9E6B4F;
+
+  /* Depth: tinted shadow + 1px top highlight (a polished bevel) */
+  --shadow-raised: 0 18px 40px -18px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-menu: 0 24px 60px -20px rgba(0, 0, 0, 0.8), 0 4px 12px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --focus-ring: 0 0 0 2px var(--blued), 0 0 0 6px rgba(91, 120, 246, 0.28);
+
+  /* ---- Typography ---- */
+  --font-display: 'Zodiak', 'Bodoni Moda', Georgia, serif;
+  --font-text: 'Switzer', 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-12: 12px; --fs-14: 14px; --fs-16: 16px; --fs-18: 18px; --fs-21: 21px;
+  --fs-24: 24px; --fs-32: 32px; --fs-44: 44px; --fs-60: 60px; --fs-84: 84px;
+
+  /* ---- Space, radii, layout ---- */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+  --radius-panel: 20px;
+  --radius-input: 12px;
+  --radius-chip: 8px;
+  --radius-pill: 999px;
+  --container: 1200px;
+  --gutter: 24px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-mech: cubic-bezier(.65, 0, .35, 1);
+  --dur-press: 160ms;
+  --dur-ui: 280ms;
+  --dur-route: 600ms;
+  --dur-load: 900ms;
+}
+
+:root[data-theme='opaline'] {
+  color-scheme: light;
+
+  --bg: #E9EAE6;
+  --bg-gradient: radial-gradient(120% 90% at 50% 0%, #F3F4F1 0%, #E9EAE6 55%, #DCDED9 100%);
+  --surface: #F4F4F1;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #E2E4DF;
+  --text: #141917;
+  --text-2: #4F5754;
+  --text-3: #6C7470;
+  --hairline: rgba(20, 25, 23, 0.12);
+  --hairline-strong: rgba(20, 25, 23, 0.22);
+
+  --accent: #2340C8;
+  --accent-ink: #FFFFFF;
+  --accent-soft: rgba(35, 64, 200, 0.08);
+  --engrave: #2340C8;
+  --salmon: #C8694A;
+  --salmon-ink: #A9542F;
+
+  --blued: #2340C8;
+  --blued-deep: #142A99;
+  --blued-ink: #2340C8;
+  --lume: #1D8A5B;
+  --lume-ink: #1A7550;
+  --lume-glow: rgba(29, 138, 91, 0.35);
+  --ruby: #B8163F;
+  --ruby-ink: #B8163F;
+  --ruby-jewel: #B3123E;
+  --topaz: #A86A00;
+  --topaz-ink: #8F5A00;
+  --moonstone: #5E7A93;
+  --moonstone-ink: #4F6A82;
+  --rhodium: #6C7470;
+
+  --added-bg: rgba(29, 138, 91, 0.10);
+  --added-strong: rgba(29, 138, 91, 0.24);
+  --removed-bg: rgba(184, 22, 63, 0.08);
+  --removed-strong: rgba(184, 22, 63, 0.20);
+
+  --dial-face-1: #FBFBF9;
+  --dial-face-2: #ECEDEA;
+  --dial-face-3: #D6D9D4;
+  --dial-ray: rgba(20, 25, 23, 0.035);
+  --dial-ring: rgba(20, 25, 23, 0.45);
+  --dial-tick: rgba(20, 25, 23, 0.62);
+  --case-metal: conic-gradient(from 210deg, #9aa29e, #f4f6f5, #a9b0ac, #ffffff, #949c98, #e6eae8, #9aa29e);
+  --date-window-bg: #FFFFFF;
+  --date-window-ink: #141917;
+  --plate-base: #C3C8C5;
+  --plate-band: rgba(255, 255, 255, 0.5);
+  --gear: #B98A4E;
+  --gear-shade: #8C6431;
+
+  --shadow-raised: 0 18px 40px -22px rgba(30, 40, 60, 0.35), 0 2px 6px -2px rgba(30, 40, 60, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-menu: 0 24px 60px -24px rgba(30, 40, 60, 0.4), 0 4px 12px -4px rgba(30, 40, 60, 0.2), inset 0 1px 0 rgba(255, 255, 255, 1);
+  --focus-ring: 0 0 0 2px var(--blued), 0 0 0 6px rgba(35, 64, 200, 0.22);
+}
+
+@media (max-width: 640px) {
+  :root { --gutter: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-press: 80ms;
+    --dur-ui: 120ms;
+    --dur-route: 120ms;
+    --dur-load: 0ms;
+  }
+}

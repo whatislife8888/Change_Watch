@@ -14,5 +14,6 @@ sse-starlette==3.5.0
 pydantic==2.14.1
 pydantic-settings==2.16.0
 tldextract==5.4.0
+truststore==0.10.5
 pytest==9.1.1
 pytest-asyncio==1.4.0

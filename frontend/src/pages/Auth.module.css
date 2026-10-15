@@ -1,0 +1,31 @@
+/* Auth.module.css — shared layout for Login and Signup: form on the left, a large engraved dial on the right. */
+.wrap {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 64px;
+  padding-top: 48px;
+  padding-bottom: 96px;
+}
+.formCol { display: flex; flex-direction: column; gap: 28px; max-width: 420px; }
+.title { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-44); line-height: 1.1; }
+.lede { color: var(--text-2); }
+.form { display: flex; flex-direction: column; gap: 20px; }
+.actions { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; margin-top: 4px; }
+.switch { color: var(--text-2); font-size: var(--fs-14); }
+.formError {
+  padding: 12px 14px;
+  border-radius: var(--radius-input);
+  background: var(--removed-bg);
+  color: var(--ruby-ink);
+  font-size: var(--fs-14);
+}
+.dialCol { display: flex; justify-content: center; align-items: center; min-width: 0; width: 100%; }
+.caption { margin-top: 20px; color: var(--text-2); font-size: var(--fs-14); text-align: center; }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 40px; padding-top: 32px; }
+  .dialCol { order: -1; }
+  .dialCol > * { width: min(300px, 78vw) !important; }
+}
