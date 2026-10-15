@@ -2,7 +2,7 @@
 # The playwright version must match the Docker base image tag (see Dockerfile).
 fastapi==0.143.1
 uvicorn[standard]==0.54.0
-playwright==1.64.0
+playwright==1.63.0
 aiosqlite==0.22.1
 pillow==12.3.0
 beautifulsoup4==4.15.0

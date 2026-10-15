@@ -745,10 +745,18 @@ async def after_change(watch: dict, snapshot: dict, previous_id: int | None, ev:
         watch = {**watch, "flapping_until": until}
         await alerts.on_flapping(watch)
 
+    # AI one-line summary (bonus): only for real changes, never for ignored ones. Falls back to the heuristic.
+    target_row = await db.fetch_one("SELECT url FROM targets WHERE id = ?", (watch["target_id"],))
+    page_url = target_row["url"] if target_row else ""
+    ai = await summarize.ai_summary(watch["name"] or display_domain(page_url), page_url, snapshot["_added"], snapshot["_removed"])
+    if ai:
+        await db.execute("UPDATE snapshots SET ai_summary = ? WHERE id = ?", (ai, snapshot["id"]))
+        snapshot["ai_summary"] = ai
+
     bus.publish(watch["user_id"], "change", {
         "watch_id": watch["id"], "snapshot_id": snapshot["id"], "previous_snapshot_id": previous_id,
-        "summary": snapshot["change_summary"], "added": snapshot["added_lines"], "removed": snapshot["removed_lines"],
-        "name": watch["name"] or display_domain((await db.fetch_one("SELECT url FROM targets WHERE id = ?", (watch["target_id"],)) or {"url": ""})["url"]),
+        "summary": snapshot.get("ai_summary") or snapshot["change_summary"], "added": snapshot["added_lines"],
+        "removed": snapshot["removed_lines"], "name": watch["name"] or display_domain(page_url),
     })
     # Keyword mode filters alerts only — the snapshot is always saved so history stays complete.
     if watch["keyword_mode"] != "off" and db.from_json(watch["keywords"], []) and not snapshot["keyword_hit"]:
