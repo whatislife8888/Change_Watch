@@ -1,0 +1,32 @@
+.title { margin-bottom: 24px; }
+.loading { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+.section {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 32px;
+  padding: 36px 0;
+  border-top: 1px solid var(--hairline);
+  max-width: 1040px;
+}
+.sectionHead { display: flex; flex-direction: column; gap: 8px; }
+.sectionTitle { font-family: var(--font-display); font-weight: 300; font-size: var(--fs-24); }
+.sectionBody { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.form { display: flex; flex-direction: column; gap: 20px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.narrow { max-width: 260px; }
+.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.channel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+}
+.channelHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.channelHead h3 { font-size: var(--fs-18); }
+.steps { margin: 0; padding-left: 20px; color: var(--text-2); font-size: var(--fs-14); display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 760px) {
+  .section { grid-template-columns: 1fr; gap: 16px; }
+  .two { grid-template-columns: 1fr; }
+}

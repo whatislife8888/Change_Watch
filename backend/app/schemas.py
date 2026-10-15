@@ -326,7 +326,7 @@ class TestAlertOut(BaseModel):
 # ---------- activity / stats ----------
 
 class ActivityItem(BaseModel):
-    kind: Literal["change", "error", "blocked", "recovered", "baseline"]
+    kind: Literal["change", "first", "error", "blocked", "recovered", "baseline"]
     at: str
     watch_id: int
     watch_name: str

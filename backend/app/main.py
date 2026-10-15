@@ -32,6 +32,7 @@ from .jobqueue import queue  # noqa: E402
 from .routes import auth as auth_routes  # noqa: E402
 from .routes import events as event_routes  # noqa: E402
 from .routes import picker as picker_routes  # noqa: E402
+from .routes import settings as settings_routes  # noqa: E402
 from .routes import public as public_routes  # noqa: E402
 from .routes import stats as stats_routes  # noqa: E402
 from .routes import watches as watch_routes  # noqa: E402
@@ -74,7 +75,7 @@ if settings.cors_origin_list:
                        allow_methods=["*"], allow_headers=["*"])
 
 for router in (auth_routes.router, watch_routes.router, stats_routes.router, event_routes.router,
-               picker_routes.router, public_routes.router, media.router):
+               picker_routes.router, settings_routes.router, public_routes.router, media.router):
     app.include_router(router)
 
 
@@ -82,7 +83,7 @@ def _register_late_routers() -> None:
     """Routers added in later phases register here so the SPA fallback below always stays last."""
     import importlib
 
-    for name in ("settings", "templates", "rss"):
+    for name in ("templates", "rss"):
         try:
             module = importlib.import_module(f"app.routes.{name}")
         except ModuleNotFoundError:

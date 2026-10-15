@@ -27,6 +27,9 @@ export type ActivityItem = S['ActivityItem'];
 export type OverviewStats = S['OverviewStats'];
 export type AdminStats = S['AdminStats'];
 export type CheckQueued = S['CheckQueued'];
+export type UserSettings = S['SettingsOut'];
+export type SettingsUpdate = S['SettingsIn'];
+export type TestAlertResult = S['TestAlertOut'];
 
 export type Sensitivity = WatchDetail['sensitivity'];
 export type KeywordMode = WatchDetail['keyword_mode'];

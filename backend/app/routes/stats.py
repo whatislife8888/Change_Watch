@@ -58,7 +58,7 @@ async def activity(limit: int = Query(50, ge=1, le=200), before: str | None = No
     for s in snaps:
         w = info[s["watch_id"]]
         items.append({
-            "kind": "baseline" if s["is_baseline"] or s["prev_id"] is None else "change",
+            "kind": "baseline" if s["is_baseline"] else "first" if s["prev_id"] is None else "change",
             "at": s["created_at"], "watch_id": s["watch_id"], "watch_name": w["name"] or w["domain"], "domain": w["domain"],
             "dial_seed": w["dial_seed"], "summary": s["ai_summary"] or s["change_summary"] or "Changed",
             "snapshot_id": s["id"], "previous_snapshot_id": s["prev_id"], "added": s["added_lines"], "removed": s["removed_lines"],
@@ -82,7 +82,7 @@ async def activity(limit: int = Query(50, ge=1, le=200), before: str | None = No
         last_state[row["watch_id"]] = state
 
     if kind:
-        wanted = {"changes": {"change", "baseline"}, "problems": {"error", "blocked", "recovered"}}.get(kind, {kind})
+        wanted = {"changes": {"change", "first", "baseline"}, "problems": {"error", "blocked", "recovered"}}.get(kind, {kind})
         items = [i for i in items if i["kind"] in wanted]
     if before:
         items = [i for i in items if i["at"] < before]

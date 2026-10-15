@@ -368,6 +368,98 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/watches/{watch_id}/picker/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Picker Session */
+        post: operations["picker_session_api_watches__watch_id__picker_session_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/picker/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Picker Test
+         * @description Preview what text a selection would watch (and which number it would track) on the stored page.
+         */
+        post: operations["picker_test_api_watches__watch_id__picker_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/watches/{watch_id}/selectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save Selectors
+         * @description Save picked regions and re-baseline: the next comparison starts from the new selection (no alert).
+         */
+        put: operations["save_selectors_api_watches__watch_id__selectors_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Settings */
+        get: operations["get_settings_api_settings_get"];
+        /** Put Settings */
+        put: operations["put_settings_api_settings_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/settings/test-alert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test Alert */
+        post: operations["test_alert_api_settings_test_alert_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/url/preview": {
         parameters: {
             query?: never;
@@ -560,7 +652,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "change" | "error" | "blocked" | "recovered" | "baseline";
+            kind: "change" | "first" | "error" | "blocked" | "recovered" | "baseline";
             /** At */
             at: string;
             /** Watch Id */
@@ -781,6 +873,25 @@ export interface components {
             /** Waiting */
             waiting: number;
         };
+        /** PickerSession */
+        PickerSession: {
+            /** Frame Url */
+            frame_url: string;
+        };
+        /** PickerTestOut */
+        PickerTestOut: {
+            /** Text Preview */
+            text_preview: string;
+            /** Number Preview */
+            number_preview: string | null;
+            /** Missing Selectors */
+            missing_selectors: string[];
+            /**
+             * Available
+             * @default true
+             */
+            available: boolean;
+        };
         /** Region */
         Region: {
             /** X */
@@ -796,6 +907,62 @@ export interface components {
         RssOut: {
             /** Rss Url */
             rss_url: string;
+        };
+        /** SelectorsIn */
+        SelectorsIn: {
+            /** Watch Selectors */
+            watch_selectors?: string[];
+            /** Ignore Selectors */
+            ignore_selectors?: string[];
+            /** Number Selector */
+            number_selector?: string | null;
+        };
+        /** SettingsIn */
+        SettingsIn: {
+            /** Display Name */
+            display_name?: string | null;
+            /** Timezone */
+            timezone?: string | null;
+            /** Digest Mode */
+            digest_mode?: ("instant" | "daily") | null;
+            /** Digest Hour */
+            digest_hour?: number | null;
+            /** Telegram Chat Id */
+            telegram_chat_id?: string | null;
+            /** Telegram Bot Token */
+            telegram_bot_token?: string | null;
+            /** Discord Webhook Url */
+            discord_webhook_url?: string | null;
+        };
+        /** SettingsOut */
+        SettingsOut: {
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            /** Timezone */
+            timezone: string;
+            /**
+             * Digest Mode
+             * @enum {string}
+             */
+            digest_mode: "instant" | "daily";
+            /** Digest Hour */
+            digest_hour: number;
+            /** Telegram Chat Id */
+            telegram_chat_id: string | null;
+            /** Telegram Has Own Bot */
+            telegram_has_own_bot: boolean;
+            /** Discord Webhook Url */
+            discord_webhook_url: string | null;
+            /** Email Available */
+            email_available: boolean;
+            /** Telegram Available */
+            telegram_available: boolean;
+            /** Ai Available */
+            ai_available: boolean;
+            /** Telegram Bot Username */
+            telegram_bot_username?: string | null;
         };
         /** ShareOut */
         ShareOut: {
@@ -873,6 +1040,21 @@ export interface components {
             is_baseline: boolean;
             /** Is First */
             is_first: boolean;
+        };
+        /** TestAlertIn */
+        TestAlertIn: {
+            /**
+             * Channel
+             * @enum {string}
+             */
+            channel: "email" | "telegram" | "discord";
+        };
+        /** TestAlertOut */
+        TestAlertOut: {
+            /** Ok */
+            ok: boolean;
+            /** Message */
+            message: string;
         };
         /** TextDiff */
         TextDiff: {
@@ -1831,6 +2013,193 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    picker_session_api_watches__watch_id__picker_session_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickerSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    picker_test_api_watches__watch_id__picker_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelectorsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickerTestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    save_selectors_api_watches__watch_id__selectors_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                watch_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelectorsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WatchDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_settings_api_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsOut"];
+                };
+            };
+        };
+    };
+    put_settings_api_settings_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    test_alert_api_settings_test_alert_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestAlertIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestAlertOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

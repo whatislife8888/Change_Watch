@@ -1,0 +1,13 @@
+.lede { color: var(--text-2); margin: 12px 0 28px; }
+.filters { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-bottom: 20px; border-bottom: 1px solid var(--hairline); }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.select { width: min(280px, 100%); }
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; max-width: 900px; }
+.item { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 18px; padding: 20px 0; border-bottom: 1px solid var(--hairline); }
+.body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.top { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.name { color: var(--text); font-family: var(--font-display); font-size: var(--fs-21); }
+.summary { color: var(--text); overflow-wrap: anywhere; }
+.meta { display: flex; gap: 16px; align-items: center; color: var(--text-2); font-size: var(--fs-14); flex-wrap: wrap; }
+.added { color: var(--lume-ink); }
+.removed { color: var(--ruby-ink); }

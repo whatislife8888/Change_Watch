@@ -10,7 +10,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, ApiError } from './client';
 import type {
   ActivityItem, AdminStats, CheckLogItem, CheckQueued, CompareResult, NumbersOut, OverviewStats, SnapshotDetail,
-  SnapshotItem, UrlPreview, User, WatchCreate, WatchDetail, WatchPatch, WatchSummary,
+  SettingsUpdate, SnapshotItem, TestAlertResult, UrlPreview, User, UserSettings, WatchCreate, WatchDetail, WatchPatch,
+  WatchSummary,
 } from './types';
 
 export const keys = {
@@ -218,4 +219,28 @@ export function useActivity(filter: { watchId?: number; kind?: string } = {}) {
 
 export function useAdminStats(enabled: boolean) {
   return useQuery({ queryKey: keys.admin, queryFn: () => api<AdminStats>('/api/admin/stats'), enabled, refetchInterval: 10_000 });
+}
+
+// ---------- settings ----------
+
+export function useSettings() {
+  return useQuery({ queryKey: keys.settings, queryFn: () => api<UserSettings>('/api/settings') });
+}
+
+export function useSaveSettings() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SettingsUpdate) => api<UserSettings>('/api/settings', { method: 'PUT', body }),
+    onSuccess: (s) => {
+      qc.setQueryData(keys.settings, s);
+      void qc.invalidateQueries({ queryKey: keys.me });
+    },
+  });
+}
+
+export function useTestAlert() {
+  return useMutation({
+    mutationFn: (channel: 'email' | 'telegram' | 'discord') =>
+      api<TestAlertResult>('/api/settings/test-alert', { method: 'POST', body: { channel } }),
+  });
 }
